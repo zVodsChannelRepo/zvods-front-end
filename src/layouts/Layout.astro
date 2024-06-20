@@ -1,15 +1,15 @@
 ---
-import NavBar from '@components/navigation/NavBar.astro'
-import { languageTag } from '@paraglide/runtime'
-import '../styles/globals.css'
+import NavBar from "@components/navigation/NavBar.astro";
+import { languageTag } from "@paraglide/runtime";
+import "../styles/globals.css";
 
 export interface Props {
-  title?: string
-  description?: string
-  noNavBar?: boolean
+  title?: string;
+  description?: string;
+  noNavBar?: boolean;
 }
 
-const { title, noNavBar } = Astro.props
+const { title, noNavBar } = Astro.props;
 ---
 
 <!doctype html>
@@ -19,7 +19,7 @@ const { title, noNavBar } = Astro.props
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>{!title ? 'zVods' : `${title} - zVods`}</title>
+    <title>{!title ? "zVods" : `${title} - zVods`}</title>
   </head>
   <body class="bg-[#f6f6f6] text-black dark:bg-[#151515] dark:text-slate-100">
     {!noNavBar && <NavBar />}
