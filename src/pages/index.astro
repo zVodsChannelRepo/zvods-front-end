@@ -1,0 +1,20 @@
+---
+import Layout from '@layouts/Layout.astro'
+---
+
+<Layout noNavBar />
+
+<script>
+  function changeLanguage(newLang: string) {
+    const url = new URL(window.location.href)
+    const pathSegments = url.pathname.split('/')
+    pathSegments.length > 1 ? (pathSegments[1] = newLang) : pathSegments.push(newLang)
+
+    url.pathname = pathSegments.join('/')
+    if (url.toString() !== window.location.toString()) {
+      window.location.replace(url.toString())
+    }
+  }
+  const currentLang = localStorage.getItem('lang') || 'pt'
+  changeLanguage(currentLang)
+</script>

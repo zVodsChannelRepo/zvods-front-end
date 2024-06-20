@@ -1,0 +1,36 @@
+---
+import CollectionPlayFill from '@icons/CollectionPlayFill.astro'
+import LanguagePicker from './LanguagePicker.astro'
+import ThemeIcon from './ThemeIcon.astro'
+import * as t from '@paraglide/messages'
+---
+
+<nav class="w-full flex justify-between px-6 py-3 bg-white dark:bg-black">
+  <ul class="flex">
+    <li class="mr-2">
+      <a class="flex items-center gap-2" href="#">
+        <CollectionPlayFill class="fill-black dark:fill-white" />
+        <span class="flex">
+          <span class="font-bold">zVods</span>
+          <span>.com</span>
+        </span>
+      </a>
+    </li>
+    <li class="mr-2">
+      <a href="#" class="hover:opacity-85 font-semibold text-sm">Vods</a>
+    </li>
+    <li class="mr-2">
+      <a href="#" class="hover:opacity-85 font-semibold text-sm">{t.channels()}</a>
+    </li>
+    <li class="mr-2">
+      <a href="#" class="hover:opacity-85 font-semibold text-sm">{t.contact()}</a>
+    </li>
+    <li class="mr-2">
+      <a href="#" class="hover:opacity-85 font-semibold text-sm">{t.about()}</a>
+    </li>
+  </ul>
+  <div class="flex gap-2">
+    <LanguagePicker />
+    <ThemeIcon />
+  </div>
+</nav>

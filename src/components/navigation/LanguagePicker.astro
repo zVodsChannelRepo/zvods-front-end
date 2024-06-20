@@ -1,0 +1,46 @@
+---
+import { languageTag, availableLanguageTags } from '@paraglide/runtime'
+const currentLang = languageTag()
+---
+
+<li class="group list-none relative dropdown cursor-pointer font-bold">
+  <a class="uppercase">{languageTag()}</a>
+  <div class="group-hover:block dropdown-menu absolute hidden h-auto">
+    <ul class="w-fit shadow">
+      {
+        availableLanguageTags.map((lang) => (
+          <li class="py-1">
+            <button id="languageChange" data-current-lang={currentLang} data-lang={lang} class="hover:text-opacity-30 block font-bold text-base uppercase cursor-pointer">
+              {lang}
+            </button>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</li>
+
+<script>
+  function changeLanguage(newLang: string) {
+    const url = new URL(window.location.href)
+    const pathSegments = url.pathname.split('/')
+    pathSegments.length > 1 ? (pathSegments[1] = newLang) : pathSegments.push(newLang)
+
+    url.pathname = pathSegments.join('/')
+    if (url.toString() !== window.location.toString()) {
+      localStorage.setItem('lang', newLang)
+      window.location.replace(url.toString())
+    }
+  }
+
+  document.querySelectorAll('#languageChange').forEach((el) => {
+    el.addEventListener('click', (e) => {
+      const $btn = e.target as HTMLButtonElement
+      const currentLang = $btn.dataset?.currentLang
+      const targetLang = $btn.dataset?.lang
+      if (currentLang && targetLang && targetLang && targetLang !== currentLang) {
+        changeLanguage(targetLang)
+      }
+    })
+  })
+</script>

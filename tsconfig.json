@@ -1,0 +1,23 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": [
+        "src/components/*"
+      ],
+      "@paraglide/*": [
+        "src/paraglide/*"
+      ],
+      "@layouts/*": [
+        "src/layouts/*"
+      ],
+      "@icons/*": [
+        "src/components/icons/*"
+      ],
+      "@lib/*": [
+        "src/lib/*"
+      ]
+    }
+  }
+}

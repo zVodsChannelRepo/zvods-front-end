@@ -1,0 +1,16 @@
+---
+import type { GetStaticPaths } from 'astro'
+import { availableLanguageTags } from '@paraglide/runtime'
+import Counter from '@components/Counter.svelte'
+import Layout from '@layouts/Layout.astro'
+import RecentVods from '@components/RecentVods.astro'
+export const getStaticPaths = (() => {
+	return availableLanguageTags.map((lang) => ({ params: { lang } }))
+}) satisfies GetStaticPaths
+---
+
+<Layout>
+	<main class="mx-auto min-h-screen">
+		<RecentVods />
+	</main>
+</Layout>
