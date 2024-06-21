@@ -15,9 +15,10 @@ export default class InfiniteScroll<T = {}, K = {}> {
   private loadingPlaceholderTemplate: HTMLTemplateElement | null
   private itemConfigurator?: (item: T, element: HTMLElement) => void
   private loadingPlaceholderCount: number
-  public lastResponse: K | any
+  private lastResponse: K | any
   private page: number
   private loading: boolean
+  private scrolledDown = false
 
   constructor(options: InfiniteScrollOptions<T, K>) {
     this.content = typeof options.box === 'string' ? document.getElementById(options.box)! : options.box
@@ -42,7 +43,10 @@ export default class InfiniteScroll<T = {}, K = {}> {
   }
 
   private async loadItems() {
-    if (this.loading) return
+    if (this.loading) {
+      this.scrolledDown = true
+      return
+    }
 
     this.loading = true
     this.showLoadingPlaceholders()
@@ -54,12 +58,18 @@ export default class InfiniteScroll<T = {}, K = {}> {
       this.end()
       return
     }
+
     items.forEach((item) => {
       const clone = this.template.content.cloneNode(true) as DocumentFragment
       this.configureItem(clone, item)
       this.content.appendChild(clone)
     })
-
+    const scrolledDown = document.body.clientHeight > window.innerHeight;
+    const hasVerticalScrollbar = document.body.clientHeight > window.innerHeight;
+    if (!hasVerticalScrollbar || scrolledDown) {
+      setTimeout(() => this.loadItems(), 1000)
+      console.log('fetching again', scrolledDown)
+    }
     this.page++
     this.loading = false
   }
@@ -94,7 +104,7 @@ export default class InfiniteScroll<T = {}, K = {}> {
 
   private onScroll() {
     if (this.ended) return
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 800) {
       this.loadItems()
     }
   }
