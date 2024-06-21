@@ -1,0 +1,16 @@
+---
+import type { GetStaticPaths } from "astro";
+import { availableLanguageTags } from "@paraglide/runtime";
+import Layout from "@layouts/Layout.astro";
+import ChannelsPage from "@components/channelscomponents/ChannelsPage.astro";
+
+export const getStaticPaths = (() => {
+  return availableLanguageTags.map((lang) => ({ params: { lang } }));
+}) satisfies GetStaticPaths;
+---
+
+<Layout>
+  <div class="flex justify-center items-start p-6 w-full h-screen">
+    <ChannelsPage />
+  </div>
+</Layout>

@@ -1,9 +1,12 @@
 ---
-import HomeVodsLoading from './HomeVodsLoading.astro'
-import VodCard from './VodCard.astro'
+import HomeVodsLoading from "./HomeVodsLoading.astro";
+import VodCard from "./VodCard.astro";
 ---
 
-<div id="vod-list" class="grid w-full gap-6 max-w-[1600px] grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+<div
+  id="vod-list"
+  class="grid w-full gap-6 max-w-[1600px] grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+>
   <template id="vod-template">
     <VodCard />
   </template>
@@ -13,41 +16,48 @@ import VodCard from './VodCard.astro'
 </div>
 
 <script>
-  import type { Vod } from '@lib/types'
-  import { vodsExported } from '@lib/utils/vods'
-  import { getLangFromUrl } from '@lib/i18n/utils'
-  import InfiniteScroll from '@lib/infiniteScroll'
-  import formatTimeAgo from '@lib/utils/formatTimeAgo'
-  const formatter = new Intl.RelativeTimeFormat(getLangFromUrl({ ...location }), { numeric: 'auto' })
+  import type { Vod } from "@lib/types";
+  import { vodsExported } from "@lib/utils/vods";
+  import { getLangFromUrl } from "@lib/i18n/utils";
+  import InfiniteScroll from "@lib/infiniteScroll";
+  import formatTimeAgo from "@lib/utils/formatTimeAgo";
+  const formatter = new Intl.RelativeTimeFormat(
+    getLangFromUrl({ ...location }),
+    { numeric: "auto" }
+  );
 
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener("DOMContentLoaded", () => {
     new InfiniteScroll<Vod, { cursor?: string }>({
-      box: 'vod-list',
-      templateBox: 'vod-template',
+      box: "vod-list",
+      templateBox: "vod-template",
       fetchItems(page, lres, setRes) {
         return new Promise((resolve) => {
-          console.log({ lres })
+          console.log({ lres });
           if (page === 10) {
-            setRes({ cursor: undefined })
-            return resolve([])
+            setRes({ cursor: undefined });
+            return resolve([]);
           }
           setTimeout(() => {
             const items = Array.from({ length: 10 }, (_, i) => ({
               ...vodsExported[Math.floor(Math.random() * vodsExported.length)],
-            })) satisfies Vod[]
-            setRes({ cursor: btoa(String(page)) })
-            resolve(items)
-          }, 1000)
-        })
+            })) satisfies Vod[];
+            setRes({ cursor: btoa(String(page)) });
+            resolve(items);
+          }, 1000);
+        });
       },
-      loadingPlaceholder: 'loading-template',
-      loadingPlaceholderCount: 10,
+      loadingPlaceholder: "loading-template",
+      loadingPlaceholderCount: 12,
       itemConfigurator(item, element) {
-        ;(element.querySelector('.vod-title') as HTMLElement).textContent = item.title
-        ;(element.querySelector('.vod-channel') as HTMLElement).textContent = item.channel
-        ;(element.querySelector('.vod-date') as HTMLElement).textContent = formatTimeAgo(item.date, formatter) || ''
-        ;(element.querySelector('.vod-thumbnail') as HTMLImageElement).src = `https://i.ytimg.com/vi_webp/${item.vodId.split(',')[0]}/hqdefault.webp`
+        (element.querySelector(".vod-title") as HTMLElement).textContent =
+          item.title;
+        (element.querySelector(".vod-channel") as HTMLElement).textContent =
+          item.channel;
+        (element.querySelector(".vod-date") as HTMLElement).textContent =
+          formatTimeAgo(item.date, formatter) || "";
+        (element.querySelector(".vod-thumbnail") as HTMLImageElement).src =
+          `https://i.ytimg.com/vi_webp/${item.vodId.split(",")[0]}/hqdefault.webp`;
       },
-    })
-  })
+    });
+  });
 </script>
