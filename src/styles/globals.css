@@ -2,13 +2,51 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+
+  .titleDefault {
+    @apply text-[#52525b] dark:text-[#e4e4e7]
+  }
+
+  .textDefault {
+    @apply text-[#52525b] dark:text-[#d4d4d8] duration-300
+  }
+
+  .iconFill {
+    @apply fill-[#52525b] dark:fill-[#d4d4d8] duration-300
+  }
+
+  .textButtonDefault {
+    @apply text-[#52525b] dark:text-[#d4d4d8] duration-300 cursor-pointer hover:text-black focus:text-black dark:hover:text-white dark:focus:text-white
+  }
+
+  .theBorder {
+    @apply border-opacity-[10%] dark:border-opacity-10 border-black dark:border-white border-[1px]
+  }
+
+  .iconButtonDefault {
+    @apply flex justify-center items-center p-2 rounded-full bg-rgbaBGLight dark:bg-rgbaBGDark hover:opacity-60 duration-300 cursor-pointer relative
+  }
+  
+  .maxWGlobal {
+    @apply max-w-[1200px]
+  }
+
+}
+
 html {
   background-color: #dedee7;
   scroll-behavior: smooth;
+  color-scheme: light;
+  color: black;
+  font-family: "Roboto", sans-serif;
 }
 
 .dark {
   background-color: #000000;
+  color-scheme: dark;
+  color: white;
+  font-family: "Roboto", sans-serif;
 }
 
 .gutter {

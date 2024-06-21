@@ -14,8 +14,8 @@ export default {
 		extend: {
 			fontFamily: 'sans-serif',
 			colors: {
-				rgbaBGLight: "rgba(0,0,0,0.1)",
-				rgbaBGDark: "rgba(255,255,255,0.2)"
+				rgbaBGLight: "rgba(0,0,0,0.08)",
+				rgbaBGDark: "rgba(255,255,255,0.1)"
 			}
 		}
 	},
