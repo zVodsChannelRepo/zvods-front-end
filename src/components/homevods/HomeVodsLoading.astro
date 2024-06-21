@@ -1,45 +1,18 @@
----
-import type { Vod } from "@lib/types";
-import formatTimeAgo from "@lib/utils/formatTimeAgo";
-import { vodsExported } from "@lib/utils/vods";
-
-const formatter = new Intl.RelativeTimeFormat(Astro.currentLocale, {
-  numeric: "auto",
-});
-
-const response = vodsExported;
-
-const vods = response as Vod[];
----
-
-<div
-  class="grid w-full gap-6 max-w-[1600px] grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
->
-  {
-    vods.map((vod, index) => {
-      return (
-        <a
-          href="/"
-          class="flex justify-start items-center rounded-lg flex-col w-full duration-300 hover:opacity-60 cursor-pointer"
-        >
-          <div class="flex justify-center items-center w-full">
-            <div class="flex justify-center items-center h-[30vw] sm:h-[23vw] md:h-[15vw] lg:h-[12vw] xl:h-[10vw] max-h-[190px] w-full rounded-lg bg-rgbaBGLight dark:bg-rgbaBGDark" />
-          </div>
-          <div class="flex justify-center items-start w-full pt-4 space-x-2">
-            <div class="flex justify-center items-start size-12 h-full">
-              <div class="flex justify-center items-center bg-rgbaBGLight dark:bg-rgbaBGDark size-10 rounded-full" />
-            </div>
-            <div class="flex w-full flex-col justify-start items-start space-y-2">
-              <h1 class="titleDefault line-clamp-1 break-all font-bold uppercase text-sm w-full">
-                <div class="flex justify-center items-center bg-rgbaBGLight dark:bg-rgbaBGDark p-2 rounded-md w-full" />
-              </h1>
-              <div class="flex justify-start items-center space-x-2 text-sm w-full">
-                <div class="flex justify-center items-center bg-rgbaBGLight dark:bg-rgbaBGDark p-2 rounded-md w-full max-w-[150px]" />
-              </div>
-            </div>
-          </div>
-        </a>
-      );
-    })
-  }
-</div>
+<a href="/" class="flex justify-start items-center rounded-lg flex-col w-full duration-300 hover:opacity-60 cursor-pointer">
+  <div class="flex justify-center items-center w-full">
+    <div class="flex justify-center items-center h-[30vw] sm:h-[23vw] md:h-[15vw] lg:h-[12vw] xl:h-[10vw] max-h-[190px] w-full rounded-lg bg-rgbaBGLight dark:bg-rgbaBGDark"></div>
+  </div>
+  <div class="flex justify-center items-start w-full pt-4 space-x-2">
+    <div class="flex justify-center items-start size-12 h-full">
+      <div class="flex justify-center items-center bg-rgbaBGLight dark:bg-rgbaBGDark size-10 rounded-full"></div>
+    </div>
+    <div class="flex w-full flex-col justify-start items-start space-y-2">
+      <h1 class="titleDefault line-clamp-1 break-all font-bold uppercase text-sm w-full">
+        <div class="flex justify-center items-center bg-rgbaBGLight dark:bg-rgbaBGDark p-2 rounded-md w-full"></div>
+      </h1>
+      <div class="flex justify-start items-center space-x-2 text-sm w-full">
+        <div class="flex justify-center items-center bg-rgbaBGLight dark:bg-rgbaBGDark p-2 rounded-md w-full max-w-[150px]"></div>
+      </div>
+    </div>
+  </div>
+</a>
