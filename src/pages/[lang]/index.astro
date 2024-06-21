@@ -2,7 +2,7 @@
 import type { GetStaticPaths } from "astro";
 import { availableLanguageTags } from "@paraglide/runtime";
 import Layout from "@layouts/Layout.astro";
-import RecentVods from "@components/recentvods/RecentVods.astro";
+import HomeVods from "@components/homevods/HomeVods.astro";
 
 export const getStaticPaths = (() => {
   return availableLanguageTags.map((lang) => ({ params: { lang } }));
@@ -10,7 +10,7 @@ export const getStaticPaths = (() => {
 ---
 
 <Layout>
-  <main class="mx-auto min-h-screen">
-    <RecentVods />
-  </main>
+  <div class="flex justify-center items-center p-6 w-full">
+    <HomeVods />
+  </div>
 </Layout>

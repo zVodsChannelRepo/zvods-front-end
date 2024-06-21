@@ -6,7 +6,11 @@ const currentLang = languageTag();
 <li
   class="group list-none relative dropdown cursor-pointer font-bold iconButtonDefault"
 >
-  <button id="toggleLanguage" data-current-lang={currentLang} class="uppercase textDefault text-xs">{languageTag()}</button>
+  <button
+    id="toggleLanguage"
+    data-current-lang={currentLang}
+    class="uppercase textDefault text-xs">{languageTag()}</button
+  >
 </li>
 
 <script>
@@ -28,7 +32,7 @@ const currentLang = languageTag();
     el.addEventListener("click", (e) => {
       const $btn = e.target as HTMLButtonElement;
       const currentLang = $btn.dataset?.currentLang;
-      const targetLang = currentLang == 'en' ? 'pt' : 'en'
+      const targetLang = currentLang == "en" ? "pt" : "en";
       if (
         currentLang &&
         targetLang &&
