@@ -15,7 +15,7 @@ import VodCard from './VodCard.astro'
 <script>
   import type { Vod } from '@lib/types'
   import { vodsExported } from '@lib/utils/vods'
-  import { getLangFromUrl } from '@lib/i18n/utils'
+  import { getLangFromUrl, relativeLink } from '@lib/i18n/utils'
   import InfiniteScroll from '@lib/infiniteScroll'
   import formatTimeAgo from '@lib/utils/formatTimeAgo'
   const formatter = new Intl.RelativeTimeFormat(getLangFromUrl({ ...location }), { numeric: 'auto' })
@@ -43,6 +43,7 @@ import VodCard from './VodCard.astro'
       loadingPlaceholder: 'loading-template',
       loadingPlaceholderCount: 10,
       itemConfigurator(item, element) {
+        ;(element as HTMLAnchorElement).href = relativeLink(`/${item.vodId}`, window.location)
         ;(element.querySelector('.vod-title') as HTMLElement).textContent = item.title
         ;(element.querySelector('.vod-channel') as HTMLElement).textContent = item.channel
         ;(element.querySelector('.vod-date') as HTMLElement).textContent = formatTimeAgo(item.date, formatter) || ''

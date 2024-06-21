@@ -1,44 +1,30 @@
 ---
-import LanguagePicker from "@components/header/LanguagePicker.astro";
-import ThemeIcon from "@components/header/ThemeIcon.astro";
-import CollectionPlayFill from "@icons/CollectionPlayFill.astro";
-import * as t from "@paraglide/messages";
+import LanguagePicker from '@components/header/LanguagePicker.astro'
+import ThemeIcon from '@components/header/ThemeIcon.astro'
+import CollectionPlayFill from '@icons/CollectionPlayFill.astro'
+import { relativeLink } from '@lib/i18n/utils'
+import * as t from '@paraglide/messages'
+const location = Astro.url
 ---
 
-<div
-  class="flex w-full justify-center items-center p-6 bg-white dark:bg-black border-opacity-[10%] dark:border-opacity-10 border-black dark:border-white border-b-[1px] sticky top-0 z-50"
->
+<div class="flex w-full justify-center items-center p-6 bg-white dark:bg-black border-opacity-[10%] dark:border-opacity-10 border-black dark:border-white border-b-[1px] sticky top-0 z-50">
   <div class="flex justify-between items-center maxWGlobal w-full">
     <div class="flex justify-center items-center space-x-4">
-      <a
-        href="/"
-        class="flex justify-center items-center space-x-4 hover:opacity-60 duration-300"
-      >
+      <a href="/" class="flex justify-center items-center space-x-4 hover:opacity-60 duration-300">
         <CollectionPlayFill class="iconFill size-6" />
       </a>
-      <a
-        href="/about"
-        class="flex justify-center items-center space-x-4 hover:opacity-60 duration-300"
-      >
+      <a href={relativeLink('/about', location)} class="flex justify-center items-center space-x-4 hover:opacity-60 duration-300">
         <h1 class="titleDefault font-medium line-clamp-1 break-all text-base">
           {t.about()}
         </h1>
       </a>
-      <a
-        href="/channels"
-        class="flex justify-center items-center space-x-4 hover:opacity-60 duration-300"
-      >
+      <a href="/channels" class="flex justify-center items-center space-x-4 hover:opacity-60 duration-300">
         <h1 class="titleDefault font-medium line-clamp-1 break-all text-base">
           {t.channels()}
         </h1>
       </a>
-      <a
-        href="/"
-        class="flex justify-center items-center space-x-4 hover:opacity-60 duration-300"
-      >
-        <h1 class="titleDefault font-medium line-clamp-1 break-all text-base">
-          Vods
-        </h1>
+      <a href="/" class="flex justify-center items-center space-x-4 hover:opacity-60 duration-300">
+        <h1 class="titleDefault font-medium line-clamp-1 break-all text-base">Vods</h1>
       </a>
     </div>
     <div class="flex justify-center items-center space-x-4">
