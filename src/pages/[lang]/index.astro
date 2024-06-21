@@ -1,12 +1,12 @@
 ---
-import type { GetStaticPaths } from "astro";
-import { availableLanguageTags } from "@paraglide/runtime";
-import Layout from "@layouts/Layout.astro";
-import HomeVods from "@components/homevods/HomeVods.astro";
+import type { GetStaticPaths } from 'astro'
+import { availableLanguageTags } from '@paraglide/runtime'
+import Layout from '@layouts/Layout.astro'
+import HomeVods from '@components/homevods/HomeVods.astro'
 
 export const getStaticPaths = (() => {
-  return availableLanguageTags.map((lang) => ({ params: { lang } }));
-}) satisfies GetStaticPaths;
+  return availableLanguageTags.map((lang) => ({ params: { lang } }))
+}) satisfies GetStaticPaths
 ---
 
 <Layout>
