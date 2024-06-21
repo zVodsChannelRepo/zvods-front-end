@@ -1,6 +1,17 @@
 {
-    "$schema": "https://inlang.com/schema/inlang-message-format",
-    "about": "Sobre",
-    "contact": "Contato",
-    "channels": "Canais"
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "about": "Sobre",
+  "contact": "Contato",
+  "channels": "Canais",
+  "abouttitle": "Feito pela comunidade para a comunidade",
+  "aboutdescription": "Atualmente o projeto é desenvolvido, mantido e liderado por dois desenvolvedores.",
+  "ceoanddeveloper": "CEO & Desenvolvedor",
+  "purposetitle": "Propósito",
+  "purposedescription": "Nosso objetivo criando o zVods é tentar ajudar a comunidade não perdendo os conteúdos íntegros. Ao perceber que normalmente ficam salvos apenas vídeos editados, clipes curtos ou prints de lives, decidimos criar uma plataforma para salvar transmissões ao vivo e também a energia proporcionada pelo chat. Não temos limites para criação no projeto. Temos objetivos de permitir que qualquer um poste o seu conteúdo no zVods, nossa ideia é apenas expandir.",
+  "profitstitle": "Lucros",
+  "profitsdescription": "Assim como toda empresa, o zVods também foi criado com um pensamento de que um dia se tornará rentável, porém não temos o objetivo de ser predatórios nisso. Não queremos atrapalhar a experiência do usuário, já que nós também somos usuários de plataformas. Portanto, não temos planos de encher a tela do usuário de anuncios, pop-ups para sair lucrando em cima de visualizações, todo negócio tem o seu tempo e fazemos o zVods porque gostamos e não porque queremos ficar ricos.",
+  "teamtitle": "Equipe",
+  "teamdescription": "A todo momento nós precisamos de membros na equipe. Atualmente estamos expandindo o projeto como nunca antes, criando novos programas como o gravador ou o nosso estúdio de cortes de conteúdo e para isso precisamos de pessoas com vontade de crescer. Se você é uma dessas pessoas, entre em contato conosco, temos interesse em ter você em nossa equipe.",
+  "futuretitle": "Futuro",
+  "futuredescription": "Como um projeto da comunidade, temos interesse em expandir para cada vez mais comunidades. Para isso é importante a sua recomendação sobre o nosso serviço em outros canais, sua doação e sua frequência de visita ao site. Agradecemos muito à comunidade por todo apoio desde o lançamento do projeto. O que aguardar do zVods? Bem, ninguém pode prever o futuro, mas nós tentaremos facilitar cada vez mais a vida do usuário final, que é quem quer sempre ver uma live e um chat do seu criador de conteúdo favorito. Se interessou pelo projeto? Entre em contato, doa, participe! Seja bem vindo ao zVods!"
 }

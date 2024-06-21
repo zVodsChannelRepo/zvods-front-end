@@ -1,0 +1,56 @@
+---
+import GloffjeCard from "./GloffjeCard.astro";
+import ZackCard from "./ZackCard.astro";
+import * as t from "@paraglide/messages";
+---
+
+<div
+  class="flex flex-col justify-start items-center w-full space-y-6 max-w-[1200px] pb-12"
+>
+  <div class="flex justify-start space-y-2 items-center w-full flex-col">
+    <h1 class="titleDefault font-bold text-3xl text-center">
+      {t.abouttitle()}
+    </h1>
+    <p class="textDefault font-medium text-lg text-center">
+      {t.aboutdescription()}
+    </p>
+    <div
+      class="flex justify-center items-center w-full space-y-12 sm:space-y-0 flex-col sm:flex-row sm:space-x-20 p-6"
+    >
+      <ZackCard />
+      <GloffjeCard />
+    </div>
+    <div class="flex justify-start space-y-2 items-center w-full flex-col pt-6">
+      <h1 class="titleDefault font-bold text-3xl text-center">
+        {t.purposetitle()}
+      </h1>
+      <p class="textDefault text-lg text-center max-w-[800px]">
+        {t.purposedescription()}
+      </p>
+    </div>
+    <div class="flex justify-start space-y-2 items-center w-full flex-col pt-6">
+      <h1 class="titleDefault font-bold text-3xl text-center">
+        {t.profitstitle()}
+      </h1>
+      <p class="textDefault text-lg text-center max-w-[800px]">
+        {t.profitsdescription()}
+      </p>
+    </div>
+    <div class="flex justify-start space-y-2 items-center w-full flex-col pt-6">
+      <h1 class="titleDefault font-bold text-3xl text-center">
+        {t.teamtitle()}
+      </h1>
+      <p class="textDefault text-lg text-center max-w-[800px]">
+        {t.teamdescription()}
+      </p>
+    </div>
+    <div class="flex justify-start space-y-2 items-center w-full flex-col pt-6">
+      <h1 class="titleDefault font-bold text-3xl text-center">
+        {t.futuretitle()}
+      </h1>
+      <p class="textDefault text-lg text-center max-w-[800px]">
+        {t.futuredescription()}
+      </p>
+    </div>
+  </div>
+</div>

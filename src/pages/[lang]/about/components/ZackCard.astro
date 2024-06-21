@@ -1,0 +1,37 @@
+---
+import GithubIcon from "@components/icons/GithubIcon.astro";
+import TwitchIcon from "@components/icons/TwitchIcon.astro";
+import TwitterIcon from "@components/icons/TwitterIcon.astro";
+import * as t from "@paraglide/messages";
+---
+
+<div class="flex justify-start items-center flex-col space-y-2">
+  <div
+    class="flex justify-center items-center bg-rgbaBGLight dark:bg-rgbaBGDark size-18 rounded-full"
+  >
+    <img
+      class="size-28 bg-contain rounded-full select-none"
+      draggable="false"
+      src="https://avatars.githubusercontent.com/u/111102863?v=4"
+    />
+  </div>
+  <div class="flex justify-start items-center space-y-1 flex-col">
+    <h1 class="break-all line-clamp-1 titleDefault font-medium text-xl">
+      Zack_SB
+    </h1>
+    <p class="break-all line-clamp-1 textDefault font-medium text-sm">
+      {t.ceoanddeveloper()}
+    </p>
+  </div>
+  <div class="flex justify-center items-center space-x-4">
+    <a href="https://twitter.com/Zacksb_" target="_blank" rel="noreferrer">
+      <TwitterIcon class="titleDefault hover:opacity-60 duration-300 size-8" />
+    </a>
+    <a href="https://github.com/zaacksb" target="_blank" rel="noreferrer">
+      <GithubIcon class="titleDefault hover:opacity-60 duration-300 size-8" />
+    </a>
+    <a href="https://twitch.tv/zack_sb" target="_blank" rel="noreferrer">
+      <TwitchIcon class="titleDefault hover:opacity-60 duration-300 size-8" />
+    </a>
+  </div>
+</div>
