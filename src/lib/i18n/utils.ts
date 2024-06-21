@@ -11,3 +11,12 @@ export function useTranslations(lang: keyof typeof ui) {
     return ui[lang][key] || ui[defaultLang][key];
   }
 }
+
+type AbsolutePathname = `/${string}`
+
+export function relativeLink(
+  pathname: AbsolutePathname,
+  url: Pick<URL, 'pathname'>
+) {
+  return `/${getLangFromUrl(url)}${pathname}`
+}

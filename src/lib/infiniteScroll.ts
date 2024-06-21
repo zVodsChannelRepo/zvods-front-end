@@ -68,7 +68,6 @@ export default class InfiniteScroll<T = {}, K = {}> {
     const hasVerticalScrollbar = document.body.clientHeight > window.innerHeight;
     if (!hasVerticalScrollbar || scrolledDown) {
       setTimeout(() => this.loadItems(), 1000)
-      console.log('fetching again', scrolledDown)
     }
     this.page++
     this.loading = false

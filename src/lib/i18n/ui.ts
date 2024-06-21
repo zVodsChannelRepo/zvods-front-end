@@ -6,13 +6,6 @@ export const languages = {
 export const defaultLang = 'pt';
 
 export const ui = {
-  en: {
-    'nav.home': 'Home',
-    'nav.about': 'About',
-    'nav.twitter': 'Twitter',
-  },
-  pt: {
-    'nav.home': 'Início',
-    'nav.about': 'Sobre',
-  },
+  en: {},
+  pt: {},
 } as const;

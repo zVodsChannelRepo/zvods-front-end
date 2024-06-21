@@ -2,7 +2,9 @@
 import LanguagePicker from "@components/header/LanguagePicker.astro";
 import ThemeIcon from "@components/header/ThemeIcon.astro";
 import CollectionPlayFill from "@icons/CollectionPlayFill.astro";
+import { relativeLink } from "@lib/i18n/utils";
 import * as t from "@paraglide/messages";
+const location = Astro.url;
 ---
 
 <div
@@ -11,13 +13,13 @@ import * as t from "@paraglide/messages";
   <div class="flex justify-between items-center maxWGlobal w-full">
     <div class="flex justify-center items-center space-x-4">
       <a
-        href="/"
+        href={relativeLink("/", location)}
         class="flex justify-center items-center space-x-4 hover:opacity-60 duration-300"
       >
         <CollectionPlayFill class="iconFill size-6" />
       </a>
       <a
-        href="/about"
+        href={relativeLink("/about", location)}
         class="flex justify-center items-center space-x-4 hover:opacity-60 duration-300"
       >
         <h1 class="titleDefault font-medium line-clamp-1 break-all text-base">
@@ -25,7 +27,7 @@ import * as t from "@paraglide/messages";
         </h1>
       </a>
       <a
-        href="/channels"
+        href={relativeLink("/channels", location)}
         class="flex justify-center items-center space-x-4 hover:opacity-60 duration-300"
       >
         <h1 class="titleDefault font-medium line-clamp-1 break-all text-base">
@@ -33,7 +35,7 @@ import * as t from "@paraglide/messages";
         </h1>
       </a>
       <a
-        href="/"
+        href={relativeLink("/", location)}
         class="flex justify-center items-center space-x-4 hover:opacity-60 duration-300"
       >
         <h1 class="titleDefault font-medium line-clamp-1 break-all text-base">
