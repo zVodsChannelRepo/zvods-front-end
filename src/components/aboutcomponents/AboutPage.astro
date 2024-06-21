@@ -1,7 +1,11 @@
 ---
+import TwitterIcon from "@components/icons/TwitterIcon.astro";
 import GloffjeCard from "./GloffjeCard.astro";
 import ZackCard from "./ZackCard.astro";
 import * as t from "@paraglide/messages";
+import TwitchIcon from "@components/icons/TwitchIcon.astro";
+import DiscordIcon from "@components/icons/DiscordIcon.astro";
+import GithubIcon from "@components/icons/GithubIcon.astro";
 ---
 
 <div
@@ -51,6 +55,41 @@ import * as t from "@paraglide/messages";
       <p class="textDefault text-lg text-center max-w-[800px]">
         {t.futuredescription()}
       </p>
+    </div>
+    <div class="flex justify-start space-y-4 items-center w-full flex-col pt-6">
+      <h1 class="titleDefault font-bold text-3xl text-center">
+        {t.contact()}
+      </h1>
+      <div class="flex justify-center items-center space-x-4">
+        <a href="https://twitter.com/gloffje" target="_blank" rel="noreferrer">
+          <TwitterIcon
+            class="titleDefault hover:opacity-60 duration-300 size-16"
+          />
+        </a>
+        <a href="https://twitch.tv/gloffje" target="_blank" rel="noreferrer">
+          <TwitchIcon
+            class="titleDefault hover:opacity-60 duration-300 size-16"
+          />
+        </a>
+        <a
+          href="https://discord.com/invite/apmp4GxzcE"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <DiscordIcon
+            class="titleDefault hover:opacity-60 duration-300 size-16"
+          />
+        </a>
+        <a
+          href="https://github.com/zVodsChannel"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <GithubIcon
+            class="titleDefault hover:opacity-60 duration-300 size-16"
+          />
+        </a>
+      </div>
     </div>
   </div>
 </div>
