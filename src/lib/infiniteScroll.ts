@@ -64,8 +64,8 @@ export default class InfiniteScroll<T = {}, K = {}> {
       this.configureItem(clone, item)
       this.content.appendChild(clone)
     })
-    const scrolledDown = document.body.clientHeight > window.innerHeight;
-    const hasVerticalScrollbar = document.body.clientHeight > window.innerHeight;
+    const scrolledDown = window.innerHeight + window.scrollY >= document.body.offsetHeight - 5;
+    const hasVerticalScrollbar = window.innerWidth > document.documentElement.clientWidth;
     if (!hasVerticalScrollbar || scrolledDown) {
       setTimeout(() => this.loadItems(), 1000)
     }
