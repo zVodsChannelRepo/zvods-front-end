@@ -10,8 +10,8 @@ export default defineConfig({
   paraglide({
     project: "./project.inlang",
     outdir: "./src/paraglide",
-  })
-  ],
+  })],
+  output: 'server',
   i18n: {
     defaultLocale: 'pt',
     locales: ['en', 'pt'],
