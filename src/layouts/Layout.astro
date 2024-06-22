@@ -7,9 +7,11 @@ export interface Props {
   title?: string
   description?: string
   noNavBar?: boolean
+  keywords?: string
 }
 
-const { title, noNavBar } = Astro.props
+const { title: titleProps, noNavBar, keywords, description } = Astro.props
+const title = !titleProps ? 'zVods' : `${titleProps} - zVods`
 ---
 
 <!doctype html>
@@ -18,13 +20,95 @@ const { title, noNavBar } = Astro.props
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="generator" content={Astro.generator} />
-    <title>{!title ? 'zVods' : `${title} - zVods`}</title>
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta itemprop="name" content={title} />
+    <meta itemprop="description" content={title} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet" />
-  </head>
-  <body>
+
+    <!-- SEO VIDEO -->
+    <!-- <link rel="search" type="application/opensearchdescription+xml" href="https://www.youtube.com/opensearch?locale=pt_BR" title="YouTube" />
+    <link rel="preload" href="https://rr2---sn-gxqxc5oq5cg-jbie.googlevideo.com/generate_204" as="fetch" />
+    <link rel="preload" href="https://rr2---sn-gxqxc5oq5cg-jbie.googlevideo.com/generate_204?conn2" as="fetch" />
+    <link rel="canonical" href="https://www.youtube.com/watch?v=OQnfdvUUwFI" />
+    <link rel="alternate" media="handheld" href="https://m.youtube.com/watch?v=OQnfdvUUwFI" />
+    <link rel="alternate" media="only screen and (max-width: 640px)" href="https://m.youtube.com/watch?v=OQnfdvUUwFI" />
+    <link rel="shortlinkUrl" href="https://youtu.be/OQnfdvUUwFI" />
+    <link rel="alternate" href="android-app://com.google.android.youtube/http/www.youtube.com/watch?v=OQnfdvUUwFI" />
+    <link rel="alternate" href="ios-app://544007664/vnd.youtube/www.youtube.com/watch?v=OQnfdvUUwFI" />
+    <link rel="alternate" type="application/json+oembed" href="https://www.youtube.com/oembed?format=json&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DOQnfdvUUwFI" title={title} />
+    <link rel="alternate" type="text/xml+oembed" href="https://www.youtube.com/oembed?format=xml&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DOQnfdvUUwFI" title={title} />
+    <link rel="image_src" href="https://i.ytimg.com/vi/OQnfdvUUwFI/maxresdefault.jpg" />
+    <meta property="og:site_name" content="YouTube" />
+    <meta property="og:url" content="https://www.youtube.com/watch?v=OQnfdvUUwFI" />
+    <meta property="og:image" content="https://i.ytimg.com/vi/OQnfdvUUwFI/maxresdefault.jpg" />
+    <meta property="og:image:width" content="1280" />
+    <meta property="og:image:height" content="720" />
+    <meta property="al:ios:app_store_id" content="544007664" />
+    <meta property="al:ios:app_name" content="YouTube" />
+    <meta property="al:ios:url" content="vnd.youtube://www.youtube.com/watch?v=OQnfdvUUwFI&feature=applinks" />
+    <meta property="al:android:url" content="vnd.youtube://www.youtube.com/watch?v=OQnfdvUUwFI&feature=applinks" />
+    <meta property="al:web:url" content="http://www.youtube.com/watch?v=OQnfdvUUwFI&feature=applinks" />
+    <meta property="og:type" content="video.other" />
+    <meta property="og:video:url" content="https://www.youtube.com/embed/OQnfdvUUwFI" />
+    <meta property="og:video:secure_url" content="https://www.youtube.com/embed/OQnfdvUUwFI" />
+    <meta property="og:video:type" content="text/html" />
+    <meta property="og:video:width" content="1280" />
+    <meta property="og:video:height" content="720" />
+    <meta property="al:android:app_name" content="YouTube" />
+    <meta property="al:android:package" content="com.google.android.youtube" />
+    <meta property="og:video:tag" content="Band FM" />
+    <meta property="og:video:tag" content="Band FM Radio" />
+    <meta property="og:video:tag" content="Band FM são paulo" />
+    <meta property="og:video:tag" content="Radio Band" />
+    <meta property="og:video:tag" content="Radio Band FM" />
+    <meta property="og:video:tag" content="ouvir band fm" />
+    <meta property="og:video:tag" content="ouvir radio band fm" />
+    <meta property="og:video:tag" content="radio band fm oficial" />
+    <meta property="fb:app_id" content="87741124305" />
+    <meta name="twitter:card" content="player" />
+    <meta name="twitter:site" content="@youtube" />
+    <meta name="twitter:url" content="https://www.youtube.com/watch?v=OQnfdvUUwFI" />
+    <meta name="twitter:image" content="https://i.ytimg.com/vi/OQnfdvUUwFI/maxresdefault.jpg" />
+    <meta name="twitter:app:name:iphone" content="YouTube" />
+    <meta name="twitter:app:id:iphone" content="544007664" />
+    <meta name="twitter:app:name:ipad" content="YouTube" />
+    <meta name="twitter:app:id:ipad" content="544007664" />
+    <meta name="twitter:app:url:iphone" content="vnd.youtube://www.youtube.com/watch?v=OQnfdvUUwFI&feature=applinks" />
+    <meta name="twitter:app:url:ipad" content="vnd.youtube://www.youtube.com/watch?v=OQnfdvUUwFI&feature=applinks" />
+    <meta name="twitter:app:name:googleplay" content="YouTube" />
+    <meta name="twitter:app:id:googleplay" content="com.google.android.youtube" />
+    <meta name="twitter:app:url:googleplay" content="https://www.youtube.com/watch?v=OQnfdvUUwFI" />
+    <meta name="twitter:player" content="https://www.youtube.com/embed/OQnfdvUUwFI" />
+    <meta name="twitter:player:width" content="1280" />
+    <meta name="twitter:player:height" content="720" />
+    <link itemprop="url" href="https://www.youtube.com/watch?v=OQnfdvUUwFI" />
+    <meta itemprop="requiresSubscription" content="False" />
+    <meta itemprop="identifier" content="OQnfdvUUwFI" />
+    <meta itemprop="duration" content="PT46M29S" />
+    <link itemprop="thumbnailUrl" href="https://i.ytimg.com/vi/OQnfdvUUwFI/maxresdefault.jpg" />
+    <link itemprop="embedUrl" href="https://www.youtube.com/embed/OQnfdvUUwFI" />
+    <meta itemprop="playerType" content="HTML5 Flash" />
+    <meta itemprop="width" content="1280" />
+    <meta itemprop="height" content="720" />
+    <meta itemprop="isFamilyFriendly" content="true" />
+    <meta
+      itemprop="regionsAllowed"
+      content="AD,AE,AF,AG,AI,AL,AM,AO,AQ,AR,AS,AT,AU,AW,AX,AZ,BA,BB,BD,BE,BF,BG,BH,BI,BJ,BL,BM,BN,BO,BQ,BR,BS,BT,BV,BW,BY,BZ,CA,CC,CD,CF,CG,CH,CI,CK,CL,CM,CN,CO,CR,CU,CV,CW,CX,CY,CZ,DE,DJ,DK,DM,DO,DZ,EC,EE,EG,EH,ER,ES,ET,FI,FJ,FK,FM,FO,FR,GA,GB,GD,GE,GF,GG,GH,GI,GL,GM,GN,GP,GQ,GR,GS,GT,GU,GW,GY,HK,HM,HN,HR,HT,HU,ID,IE,IL,IM,IN,IO,IQ,IR,IS,IT,JE,JM,JO,JP,KE,KG,KH,KI,KM,KN,KP,KR,KW,KY,KZ,LA,LB,LC,LI,LK,LR,LS,LT,LU,LV,LY,MA,MC,MD,ME,MF,MG,MH,MK,ML,MM,MN,MO,MP,MQ,MR,MS,MT,MU,MV,MW,MX,MY,MZ,NA,NC,NE,NF,NG,NI,NL,NO,NP,NR,NU,NZ,OM,PA,PE,PF,PG,PH,PK,PL,PM,PN,PR,PS,PT,PW,PY,QA,RE,RO,RS,RU,RW,SA,SB,SC,SD,SE,SG,SH,SI,SJ,SK,SL,SM,SN,SO,SR,SS,ST,SV,SX,SY,SZ,TC,TD,TF,TG,TH,TJ,TK,TL,TM,TN,TO,TR,TT,TV,TW,TZ,UA,UG,UM,US,UY,UZ,VA,VC,VE,VG,VI,VN,VU,WF,WS,YE,YT,ZA,ZM,ZW"
+    />
+    <meta itemprop="interactionCount" content="1160" />
+    <meta itemprop="datePublished" content="2024-06-20T04:12:24-07:00" />
+    <meta itemprop="uploadDate" content="2024-06-20T04:12:24-07:00" />
+    <meta itemprop="genre" content="Entertainment" /> -->
+  </head><body>
     {!noNavBar && <Header />}
     <slot />
   </body>
