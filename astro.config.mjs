@@ -12,7 +12,7 @@ export default defineConfig({
     project: "./project.inlang",
     outdir: "./src/paraglide"
   })],
-  output: 'server',
+  output: 'hybrid',
   i18n: {
     defaultLocale: 'pt',
     locales: ['en', 'pt'],
@@ -32,5 +32,7 @@ export default defineConfig({
       }
     }
   },
-  adapter: vercel()
+  adapter: vercel({
+    isr: true
+  })
 });
