@@ -1,0 +1,30 @@
+---
+import Chat from '@components/vod/Chat.astro'
+import Player from '@components/vod/Player.astro'
+import VodNotFound from '@components/vod/VodNotFound.astro'
+import Layout from '@layouts/Layout.astro'
+import { relativeLink } from '@lib/i18n/utils'
+
+const vid = Astro.url.searchParams.get('v')
+if (!vid) {
+  Astro.redirect(relativeLink(`/`, Astro.url))
+  return
+}
+const res = await fetch(`https://zvods.com/api/vod/${vid}`).catch(() => {})
+const data = await res?.json?.()
+---
+
+<Layout title="Watch">
+  {
+    res?.status !== 200 || data?.code !== 'success' ? (
+      <VodNotFound />
+    ) : (
+      <div class="flex flex-1 h-[90vh] gap-1  bg-slate-800 ">
+        <Player />
+        <Chat />
+      </div>
+    )
+  }
+</Layout>
+
+<script></script>
