@@ -1,11 +1,6 @@
 ---
-import type { GetStaticPaths } from 'astro'
-import { availableLanguageTags } from '@paraglide/runtime'
 import Layout from '@layouts/Layout.astro'
 export const prerender = true
-export const getStaticPaths = (() => {
-  return availableLanguageTags.map((lang) => ({ params: { lang } }))
-}) satisfies GetStaticPaths
 ---
 
 <Layout>
