@@ -1,0 +1,99 @@
+---
+import HomeVodsLoading from "@components/homevods/HomeVodsLoading.astro";
+import VodCard from "@components/homevods/VodCard.astro";
+import type { Channel } from "@lib/types";
+import { channelsExported } from "@lib/utils/channels";
+import { SocialsIcons } from "@lib/utils/socialIcons";
+import * as t from "@paraglide/messages";
+
+export interface Props {
+  streamer: string;
+}
+
+const { streamer } = Astro.props;
+
+const channels = channelsExported as Channel[];
+
+const channelInformations = channels.find(
+  (streamerFinder) => streamerFinder.route === String(streamer)
+);
+---
+
+<div
+  id="vod-list"
+  class="grid w-full gap-6 max-w-[1200px] grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+>
+  <template id="vod-template">
+    <VodCard />
+  </template>
+  <template id="loading-template">
+    <HomeVodsLoading />
+  </template>
+</div>
+
+<script>
+  import type { Vod } from "@lib/types";
+  import { vodsExported } from "@lib/utils/vods";
+  import { getLangFromUrl, relativeLink } from "@lib/i18n/utils";
+  import InfiniteScroll from "@lib/infiniteScroll";
+  import formatTimeAgo from "@lib/utils/formatTimeAgo";
+  const formatter = new Intl.RelativeTimeFormat(
+    getLangFromUrl({ ...location }),
+    { numeric: "auto" }
+  );
+
+  document.addEventListener("DOMContentLoaded", () => {
+    new InfiniteScroll<Vod, { cursor?: string }>({
+      box: "vod-list",
+      templateBox: "vod-template",
+      fetchItems(page, lres, setRes) {
+        return new Promise((resolve) => {
+          console.log({ lres });
+          if (page === 10) {
+            setRes({ cursor: undefined });
+            return resolve([]);
+          }
+          setTimeout(() => {
+            const items = Array.from({ length: 10 }, (_, i) => ({
+              ...vodsExported[Math.floor(Math.random() * vodsExported.length)],
+            })) satisfies Vod[];
+            setRes({ cursor: btoa(String(page)) });
+            resolve(items);
+          }, 1000);
+        });
+      },
+      loadingPlaceholder: "loading-template",
+      loadingPlaceholderCount: 12,
+      itemConfigurator(item, element) {
+        element
+          .querySelectorAll(".vod-link")
+          .forEach(
+            (el) =>
+              ((el as HTMLAnchorElement).href = relativeLink(
+                `/watch/${item.vodId}`,
+                window.location
+              ))
+          );
+        (element.querySelector(".vod-title") as HTMLElement).textContent =
+          item.title;
+        (element.querySelector(".vod-date") as HTMLElement).textContent =
+          formatTimeAgo(item.date, formatter) || "";
+        (element.querySelector(".vod-thumbnail") as HTMLImageElement).src =
+          `https://i.ytimg.com/vi_webp/${item.vodId.split(",")[0]}/hqdefault.webp`;
+        const vodChannel = element.querySelector(
+          ".vod-channel"
+        ) as HTMLAnchorElement;
+        vodChannel.textContent = item.channel;
+        element
+          .querySelectorAll(".vod-channel-link")
+          .forEach(
+            (el) =>
+              ((el as HTMLAnchorElement).href = relativeLink(
+                `/${item.channel}`,
+                window.location
+              ))
+          );
+      },
+    });
+  });
+</script>

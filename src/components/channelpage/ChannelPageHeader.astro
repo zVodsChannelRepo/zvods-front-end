@@ -1,0 +1,73 @@
+---
+import type { Channel } from "@lib/types";
+import { channelsExported } from "@lib/utils/channels";
+import { SocialsIcons } from "@lib/utils/socialIcons";
+import * as t from "@paraglide/messages";
+
+export interface Props {
+  streamer: string;
+}
+
+const { streamer } = Astro.props;
+
+const channels = channelsExported as Channel[];
+
+const channelInformations = channels.find(
+  (streamerFinder) => streamerFinder.route === String(streamer)
+);
+---
+
+<div
+  class="flex flex-col justify-start items-center w-full space-y-6 max-w-[1200px] pb-6"
+>
+  <div
+    class="flex justify-start md:justify-between flex-col md:flex-row items-center w-full space-y-4 md:space-y-0 md:space-x-4"
+  >
+    <div
+      class="flex justify-start md:justify-center flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4"
+    >
+      <div class="flex justify-center items-center">
+        <div
+          class="flex justify-center items-center bg-rgbaBGLight dark:bg-rgbaBGDark size-16 md:size-12 rounded-full"
+        >
+          <img
+            class="size-16 md:size-12 bg-contain rounded-full select-none"
+            draggable="false"
+            src={channelInformations?.avatarImage}
+          />
+        </div>
+      </div>
+      <h1
+        class="titleDefault font-bold text-lg md:text-2xl text-center break-all line-clamp-1"
+      >
+        {t.vodsof()}
+        {channelInformations?.name}
+      </h1>
+    </div>
+    <div class="flex justify-center items-center space-x-4">
+      {
+        channelInformations?.socials.map((social, index) => {
+          const FindedIcon = SocialsIcons[`${social.name}`]?.icon;
+          const FindedIconColor = SocialsIcons[`${social.name}`]?.color;
+
+          return (
+            <a
+              target="_blank"
+              href={social.link}
+              title={social.name}
+              rel="noreferrer"
+              class={`${FindedIconColor} hover:opacity-60 duration-300`}
+            >
+              <FindedIcon class="size-6 md:size-8" />
+            </a>
+          );
+        })
+      }
+    </div>
+  </div>
+
+  <div
+    class="w-full opacity-[10%] dark:opacity-10 border-black dark:border-white border-t-[1px]"
+  >
+  </div>
+</div>

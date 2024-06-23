@@ -1,0 +1,20 @@
+---
+import type { GetStaticPaths } from "astro";
+import { availableLanguageTags } from "@paraglide/runtime";
+import Layout from "@layouts/Layout.astro";
+import ChannelPageWrapper from "@components/channelpage/ChannelPageWrapper.astro";
+
+export const prerender = false;
+
+const { streamer } = Astro.params;
+
+if (!streamer) {
+  return Astro.redirect(`/${Astro.currentLocale}`);
+}
+---
+
+<Layout title={streamer}>
+  <div class="flex justify-center items-start p-6 w-full h-screen">
+    <ChannelPageWrapper {streamer} />
+  </div>
+</Layout>
