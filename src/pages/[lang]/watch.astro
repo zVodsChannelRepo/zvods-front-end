@@ -13,11 +13,17 @@ if (!vid) {
 }
 const res = await fetch(`https://zvods.com/api/vod/${vid}`).catch(() => {})
 const data = await res?.json?.()
+
+const formatter = new Intl.DateTimeFormat(Astro.currentLocale)
+const date = formatter.format(new Date(data?.vod?.date))
+const vodExists = res?.status == 200 && data?.code == 'success'
+const title = vodExists ? `${data?.vod?.title} ${date}` : 'Vod não encontrado'
+const description = vodExists ? `Acesse a transmissão do dia ${date} de ${data?.vod?.channel} e assista o conteúdo completo com o chat da live!` : 'VOD não encontrado'
 ---
 
-<Layout title="Watch">
+<Layout title={title} description={description} videoId={vodExists ? vid : undefined}>
   {
-    res?.status !== 200 || data?.code !== 'success' ? (
+    !vodExists ? (
       <VodNotFound />
     ) : (
       <div class="flex flex-1 h-[90vh] gap-1  bg-slate-800 ">
