@@ -43,7 +43,7 @@ import VodCard from './VodCard.astro'
       loadingPlaceholder: 'loading-template',
       loadingPlaceholderCount: 12,
       itemConfigurator(item, element) {
-        element.querySelectorAll('.vod-link').forEach((el) => ((el as HTMLAnchorElement).href = relativeLink(`/watch?v=${item.vodId}`, window.location)))
+        element.querySelectorAll('.vod-link').forEach((el) => ((el as HTMLAnchorElement).href = relativeLink(`/watch/${item.vodId}`, window.location)))
         ;(element.querySelector('.vod-title') as HTMLElement).textContent = item.title
         ;(element.querySelector('.vod-date') as HTMLElement).textContent = formatTimeAgo(item.date, formatter) || ''
         ;(element.querySelector('.vod-thumbnail') as HTMLImageElement).src = `https://i.ytimg.com/vi_webp/${item.vodId.split(',')[0]}/hqdefault.webp`

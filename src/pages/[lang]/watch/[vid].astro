@@ -5,16 +5,16 @@ import VodNotFound from '@components/vod/VodNotFound.astro'
 import Layout from '@layouts/Layout.astro'
 export const prerender = false
 
-const vid = Astro.url.searchParams.get('v')
-console.log({ vid })
+const { vid } = Astro.params
+
 if (!vid) {
   return Astro.redirect(`/${Astro.currentLocale}`)
 }
+console.log(`https://zvods.com/api/vod/${vid}`)
 const res = await fetch(`https://zvods.com/api/vod/${vid}`).catch(() => {})
 const data = await res?.json?.()
-console.log(data)
 const formatter = new Intl.DateTimeFormat(Astro.currentLocale)
-const date = formatter.format(new Date(data?.vod?.date))
+const date = formatter.format(new Date(data?.vod?.date || Date.now()))
 const vodExists = res?.status == 200 && data?.code == 'success'
 const title = vodExists ? `${data?.vod?.title} ${date}` : 'Vod não encontrado'
 const description = vodExists ? `Acesse a transmissão do dia ${date} de ${data?.vod?.channel} e assista o conteúdo completo com o chat da live!` : 'VOD não encontrado'
