@@ -2,8 +2,9 @@
 import Chat from '@components/vod/Chat.astro'
 import Player from '@components/vod/Player.astro'
 import VodNotFound from '@components/vod/VodNotFound.astro'
-import Layout from '@layouts/Layout.astro'
 import { relativeLink } from '@lib/i18n/utils'
+import Layout from '@layouts/Layout.astro'
+export const prerender = false
 
 const vid = Astro.url.searchParams.get('v')
 if (!vid) {
