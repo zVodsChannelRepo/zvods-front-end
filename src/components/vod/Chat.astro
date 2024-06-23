@@ -1,9 +1,11 @@
 ---
-import DualScreenFilled from '@components/icons/DualScreenFilled.astro'
-import DualScreenRegular from '@components/icons/DualScreenRegular.astro'
+import DualScreenFilled from "@components/icons/DualScreenFilled.astro";
+import DualScreenRegular from "@components/icons/DualScreenRegular.astro";
 ---
 
-<div class="bg-zinc-600 w-[450px] flex items-center justify-center">
+<div
+  class="bg-white dark:bg-white/5 theBorder border-t-[0px] lg:border-t-[1px] rounded-lg group-[.theater]:rounded-none group-[.theater]:border-[0px] w-full lg:max-w-[450px] h-full flex items-center justify-center"
+>
   <button id="toggle-theater">
     <DualScreenFilled class="hidden fill-white size-7 group-[.theater]:block" />
     <DualScreenRegular class="fill-white size-7 group-[.theater]:hidden" />
@@ -11,8 +13,10 @@ import DualScreenRegular from '@components/icons/DualScreenRegular.astro'
 </div>
 
 <script>
-  import { toggleTheater } from '@lib/vodUtils'
-  ;(document.querySelector('#toggle-theater') as HTMLButtonElement).addEventListener('click', (e) => {
-    toggleTheater()
-  })
+  import { toggleTheater } from "@lib/vodUtils";
+  (
+    document.querySelector("#toggle-theater") as HTMLButtonElement
+  ).addEventListener("click", (e) => {
+    toggleTheater();
+  });
 </script>
