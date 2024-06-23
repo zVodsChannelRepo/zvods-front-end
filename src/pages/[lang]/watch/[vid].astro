@@ -25,12 +25,34 @@ const description = vodExists ? `Acesse a transmissão do dia ${date} de ${data?
     !vodExists ? (
       <VodNotFound />
     ) : (
-      <div class="flex flex-1 h-[90vh] gap-1  bg-slate-800 ">
-        <Player />
-        <Chat />
-      </div>
+      <vod-content class=" bg-slate-800 ">
+        <div class="group-[.theater]:h-screen flex flex-1 gap-1 h-[90vh]">
+          <Player />
+          <Chat />
+        </div>
+        <vod-section>
+          <span>mais coisas aqui</span>
+        </vod-section>
+      </vod-content>
     )
   }
 </Layout>
 
-<script></script>
+<script>
+  import { toggleTheater } from '@lib/vodUtils'
+
+  document.body.classList.add('group')
+  ;(document.querySelector('header') as HTMLElement).classList.add('group-[.theater]:hidden')
+  ;(document.querySelector('vod-section') as HTMLElement).classList.add('group-[.theater]:hidden')
+
+  document.addEventListener('keyup', (event) => {
+    if (event.altKey) {
+      switch (event.code) {
+        case 'KeyT':
+          toggleTheater()
+          break
+      }
+      return
+    }
+  })
+</script>

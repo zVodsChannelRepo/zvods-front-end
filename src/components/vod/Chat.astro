@@ -1,5 +1,18 @@
 ---
-
+import DualScreenFilled from '@components/icons/DualScreenFilled.astro'
+import DualScreenRegular from '@components/icons/DualScreenRegular.astro'
 ---
 
-<div class="bg-zinc-600 w-[450px] flex items-center justify-center">Chat</div>
+<div class="bg-zinc-600 w-[450px] flex items-center justify-center">
+  <button id="toggle-theater">
+    <DualScreenFilled class="hidden fill-white size-7 group-[.theater]:block" />
+    <DualScreenRegular class="fill-white size-7 group-[.theater]:hidden" />
+  </button>
+</div>
+
+<script>
+  import { toggleTheater } from '@lib/vodUtils'
+  ;(document.querySelector('#toggle-theater') as HTMLButtonElement).addEventListener('click', (e) => {
+    toggleTheater()
+  })
+</script>
