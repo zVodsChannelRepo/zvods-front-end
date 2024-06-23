@@ -2,18 +2,17 @@
 import Chat from '@components/vod/Chat.astro'
 import Player from '@components/vod/Player.astro'
 import VodNotFound from '@components/vod/VodNotFound.astro'
-import { relativeLink } from '@lib/i18n/utils'
 import Layout from '@layouts/Layout.astro'
 export const prerender = false
 
 const vid = Astro.url.searchParams.get('v')
+console.log({ vid })
 if (!vid) {
-  Astro.redirect(relativeLink(`/`, Astro.url))
-  return
+  return Astro.redirect(`/${Astro.currentLocale}`)
 }
 const res = await fetch(`https://zvods.com/api/vod/${vid}`).catch(() => {})
 const data = await res?.json?.()
-
+console.log(data)
 const formatter = new Intl.DateTimeFormat(Astro.currentLocale)
 const date = formatter.format(new Date(data?.vod?.date))
 const vodExists = res?.status == 200 && data?.code == 'success'
