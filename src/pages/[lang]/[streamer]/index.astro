@@ -1,20 +1,25 @@
 ---
-import type { GetStaticPaths } from "astro";
-import { availableLanguageTags } from "@paraglide/runtime";
-import Layout from "@layouts/Layout.astro";
-import ChannelPageWrapper from "@components/channelpage/ChannelPageWrapper.astro";
-
-export const prerender = false;
-
-const { streamer } = Astro.params;
-
-if (!streamer) {
-  return Astro.redirect(`/${Astro.currentLocale}`);
-}
+import ChannelPageWrapper from '@components/channelpage/ChannelPageWrapper.astro'
+import Layout from '@layouts/Layout.astro'
+import type { Channel } from '@lib/types'
+import { availableLanguageTags } from '@paraglide/runtime'
+import type { GetStaticPaths } from 'astro'
+export const prerender = true
+export const getStaticPaths = (async () => {
+  const req = await fetch(`https://beta.zvods.com/api/channel`)
+  const channels = (await req.json()) as Channel[]
+  const pages = channels
+    .filter((channel) => channel.launched)
+    .flatMap((channel) => {
+      return availableLanguageTags.map((lang) => ({ params: { lang, streamer: channel.name.toLowerCase() }, props: { channelData: channel } }))
+    })
+  return pages
+}) satisfies GetStaticPaths
+const { channelData } = Astro.props
 ---
 
-<Layout title={streamer}>
+<Layout title={channelData.name}>
   <div class="flex justify-center items-start p-6 w-full h-screen">
-    <ChannelPageWrapper {streamer} />
+    <ChannelPageWrapper {channelData} />
   </div>
 </Layout>
