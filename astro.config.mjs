@@ -20,6 +20,9 @@ export default defineConfig({
       // prefixDefaultLocale: true
     }
   },
+  devToolbar: {
+    enabled: false
+  },
   trailingSlash: 'ignore',
   redirects: {},
   vite: {
