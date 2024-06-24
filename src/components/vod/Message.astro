@@ -1,0 +1,109 @@
+---
+
+---
+
+<div class="message break-words px-1 fade-in-bottom">
+  <div class="inline break-all author mr-1">
+    <div class="badges inline-flex">
+      <template id="badge-template">
+        <img class="h-4 self-center mr-0.5 badge select-none" src="" />
+      </template>
+    </div>
+    <span class="font-semibold authorName -mr-1">ZackSB</span>
+  </div>
+  <div class="inline content mb-1">
+    <template id="emote-template"><img class="h-7 mb-1 inline-flex select-none" src="" /></template>
+  </div>
+</div>
+
+<style>
+  .fade-in-right {
+    animation: fadeInRight 100ms linear 0s 1 normal none;
+  }
+
+  .fade-in-left {
+    animation: fadeInLeft 100ms linear 0s 1 normal none;
+  }
+
+  .fade-in-bottom {
+    animation: fadeInBottom 100ms linear 0s 1 normal none;
+  }
+
+  .slide-in-left {
+    animation: slideInLeft 100ms linear 0s 1 normal none;
+  }
+
+  .slide-in-right {
+    animation: slideInRight 100ms linear 0s 1 normal none;
+  }
+
+  .slide-in-bottom {
+    animation: slideInBottom 100ms linear 0s 1 normal none;
+  }
+
+  @keyframes fadeInRight {
+    0% {
+      opacity: 0;
+      transform: translateX(25%);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes fadeInLeft {
+    0% {
+      opacity: 0;
+      transform: translateX(-25%);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes fadeInBottom {
+    0% {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInLeft {
+    0% {
+      transform: translateX(25%);
+    }
+
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideInRight {
+    0% {
+      transform: translateX(25%);
+    }
+
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideInBottom {
+    0% {
+      transform: translateY(100%);
+    }
+
+    100% {
+      transform: translateY(0);
+    }
+  }
+</style>

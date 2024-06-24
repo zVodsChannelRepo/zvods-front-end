@@ -1,44 +1,38 @@
 ---
-import Chat from "@components/vod/Chat.astro";
-import Player from "@components/vod/Player.astro";
-import VodInformations from "@components/vod/VodInformations.astro";
-import VodNotFound from "@components/vod/VodNotFound.astro";
-import Layout from "@layouts/Layout.astro";
-export const prerender = false;
+import Chat from '@components/vod/Chat.astro'
+import Player from '@components/vod/Player.astro'
+import VodInformations from '@components/vod/VodInformations.astro'
+import VodNotFound from '@components/vod/VodNotFound.astro'
+import Layout from '@layouts/Layout.astro'
+import type { Vod } from '@lib/types'
+export const prerender = false
 
-const { vid } = Astro.params;
+const { vid } = Astro.params
 
 if (!vid) {
-  return Astro.redirect(`/${Astro.currentLocale}`);
+  return Astro.redirect(`/${Astro.currentLocale}`)
 }
-console.log(`https://zvods.com/api/vod/${vid}`);
-const res = await fetch(`https://zvods.com/api/vod/${vid}`).catch(() => {});
-const data = await res?.json?.();
-const formatter = new Intl.DateTimeFormat(Astro.currentLocale);
-const date = formatter.format(new Date(data?.vod?.date || Date.now()));
-const vodExists = res?.status == 200 && data?.code == "success";
-const title = vodExists ? `${data?.vod?.title} ${date}` : "Vod não encontrado";
-const description = vodExists
-  ? `Acesse a transmissão do dia ${date} de ${data?.vod?.channel} e assista o conteúdo completo com o chat da live!`
-  : "VOD não encontrado";
+const res = await fetch(`https://zvods.com/api/vod/${vid}`).catch(() => {})
+const data = (await res?.json?.()) as { vod: Vod; code: string }
+const formatter = new Intl.DateTimeFormat(Astro.currentLocale)
+const date = formatter.format(new Date(data?.vod?.date || Date.now()))
+const vodExists = res?.status == 200 && data?.code == 'success'
+const title = vodExists ? `${data?.vod?.title} ${date}` : 'Vod não encontrado'
+const description = vodExists ? `Acesse a transmissão do dia ${date} de ${data?.vod?.channel} e assista o conteúdo completo com o chat da live!` : 'VOD não encontrado'
 ---
 
-<Layout
-  title={title}
-  description={description}
-  videoId={vodExists ? vid : undefined}
->
+<Layout title={title} description={description} videoId={vodExists ? vid : undefined}>
   {
     !vodExists ? (
       <VodNotFound />
     ) : (
       <vod-content class="flex justify-start items-center w-full flex-col h-full">
         <div class="group-[.theater]:h-screen flex justify-center items-center w-full h-[80vh] lg:h-[70vh] p-6 group-[.theater]:p-0 max-w-[1600px] group-[.theater]:max-w-full group-[.theater]:min-h-full min-h-[400px] group-[.theater]:space-x-0 group-[.theater]:space-y-0 lg:space-y-0 lg:space-x-6 flex-col lg:flex-row">
-          <Player />
-          <Chat />
+          <Player videoId={vid} />
+          <Chat platform={data.vod.platform} chatId={data.vod.chatId} channelId={data.vod.channelId} />
         </div>
         <vod-section class="flex justify-center items-center w-full max-w-[1600px]">
-          <VodInformations />
+          <VodInformations vod={data.vod} />
         </vod-section>
       </vod-content>
     )
@@ -46,24 +40,20 @@ const description = vodExists
 </Layout>
 
 <script>
-  import { toggleTheater } from "@lib/vodUtils";
+  import { toggleTheater } from '@lib/vodUtils'
 
-  document.body.classList.add("group");
-  (document.querySelector("header") as HTMLElement).classList.add(
-    "group-[.theater]:hidden"
-  );
-  (document.querySelector("vod-section") as HTMLElement).classList.add(
-    "group-[.theater]:hidden"
-  );
+  document.body.classList.add('group')
+  ;(document.querySelector('header') as HTMLElement).classList.add('group-[.theater]:hidden')
+  ;(document.querySelector('vod-section') as HTMLElement).classList.add('group-[.theater]:hidden')
 
-  document.addEventListener("keyup", (event) => {
+  document.addEventListener('keyup', (event) => {
     if (event.altKey) {
       switch (event.code) {
-        case "KeyT":
-          toggleTheater();
-          break;
+        case 'KeyT':
+          toggleTheater()
+          break
       }
-      return;
+      return
     }
-  });
+  })
 </script>

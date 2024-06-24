@@ -1,22 +1,186 @@
 ---
-import DualScreenFilled from "@components/icons/DualScreenFilled.astro";
-import DualScreenRegular from "@components/icons/DualScreenRegular.astro";
+import DualScreenFilled from '@components/icons/DualScreenFilled.astro'
+import DualScreenRegular from '@components/icons/DualScreenRegular.astro'
+import SettingsFilled from '@components/icons/SettingsFilled.astro'
+import Message from './Message.astro'
+import ChatPaused from './ChatPaused.astro'
+import type { Vod } from '@lib/types'
+export interface Props {
+  chatId: string
+  channelId: string
+  platform: Vod['platform']
+}
+const { channelId, chatId, platform } = Astro.props
 ---
 
-<div
-  class="bg-white dark:bg-white/5 theBorder border-t-[0px] lg:border-t-[1px] rounded-lg group-[.theater]:rounded-none group-[.theater]:border-[0px] w-full lg:max-w-[450px] h-full flex items-center justify-center"
->
-  <button id="toggle-theater">
-    <DualScreenFilled class="hidden fill-white size-7 group-[.theater]:block" />
-    <DualScreenRegular class="fill-white size-7 group-[.theater]:hidden" />
-  </button>
+<div class="bg-white dark:bg-white/5 theBorder border-t-[0px] lg:border-t-[1px] rounded-lg group-[.theater]:rounded-none group-[.theater]:border-[0px] w-full lg:max-w-[450px] h-full items-start relative">
+  <div class="bg-white dark:bg-black h-[45px] flex justify-between w-full absolute z-10 px-2">
+    <button id="toggle-theater">
+      <DualScreenFilled class="hidden size-7 group-[.theater]:block" />
+      <DualScreenRegular class="size-7 group-[.theater]:hidden" />
+    </button>
+    <button id="settings">
+      <SettingsFilled class="size-7" />
+    </button>
+  </div>
+  <div class="relative h-full">
+    <div class="messages h-full">
+      <div data-chat-id={chatId} data-channel-id={channelId} data-platform={platform} id="chat-box" class="messages-content">
+        <template>
+          <Message />
+        </template>
+      </div>
+    </div>
+    <ChatPaused />
+  </div>
 </div>
-
 <script>
-  import { toggleTheater } from "@lib/vodUtils";
-  (
-    document.querySelector("#toggle-theater") as HTMLButtonElement
-  ).addEventListener("click", (e) => {
-    toggleTheater();
-  });
+  import { toggleTheater } from '@lib/vodUtils'
+  import type { FormatChatMessage, CustomBadges, Vod, Badges, Emotes } from '@lib/types'
+  import { chatIsPaused, handlerChatScroll, loadBadges, loadThirdPartyEmotes } from '@lib/chatUtils'
+  const MAX_MESSAGES = 150
+  document.querySelector('#toggle-theater')?.addEventListener('click', toggleTheater)
+  document.querySelector('.messages')?.addEventListener('scroll', handlerChatScroll)
+
+  const chatBox = document.querySelector('#chat-box') as HTMLDivElement
+  const { channelId, chatId, platform } = chatBox.dataset as { chatId?: string; channelId?: string; platform?: Vod['platform'] }
+
+  const messageTemplate = chatBox.querySelector('template')
+  let customEmotes: Emotes = new Map()
+  let badges: Badges = new Map()
+  function printMessage(message: FormatChatMessage, messageTemplate: HTMLTemplateElement | null) {
+    if (!messageTemplate) return
+    const template = messageTemplate?.content?.cloneNode(true) as DocumentFragment
+    const authorName = template.querySelector('.authorName') as HTMLSpanElement
+    authorName.textContent = message.author.name
+    authorName.style.color = message.author.color
+    const $content = template.querySelector('.content')
+
+    function pushBadge(url: string, alt: string) {
+      const $badgeTemplate = (template.querySelector('#badge-template') as HTMLTemplateElement)?.content?.cloneNode(true) as DocumentFragment
+      const $badge = $badgeTemplate.querySelector('img') as HTMLImageElement
+      $badge.src = url
+      $badge.alt = alt
+      template.querySelector('.badges')?.appendChild($badge)
+    }
+
+    message.author.badges.split(',').forEach((badgeStr) => {
+      const [name, version] = badgeStr.split('/')
+      if (name == 'image') {
+        pushBadge(version, name)
+      } else {
+        const badge = badges.get(name)?.get(version)
+        if (badge) {
+          pushBadge(badge.image, badge.description)
+        }
+      }
+    })
+
+    function createImageEmote(url: string, alt: string) {
+      const $emoteTemplate = (template.querySelector('#emote-template') as HTMLTemplateElement)?.content?.cloneNode(true) as DocumentFragment
+      const $emote = $emoteTemplate.querySelector('img') as HTMLImageElement
+      $emote.src = url
+      $emote.alt = alt
+      return $emote
+    }
+
+    function createMessageSpan(text: string) {
+      const span = document.createElement('span')
+      span.textContent = text
+      return span
+    }
+
+    function parseTextContent(text: string) {
+      if (customEmotes.size == 0) return createMessageSpan(text)
+      const elements = []
+      const parts = text.split(' ')
+      let textBuffer = ''
+
+      parts.forEach((part) => {
+        const emote = customEmotes.get(part)
+
+        if (emote) {
+          if (textBuffer) {
+            elements.push(createMessageSpan(textBuffer))
+            textBuffer = ''
+          }
+          elements.push(createImageEmote(emote.url, emote.alt))
+        } else {
+          textBuffer += `${part} `
+        }
+      })
+
+      if (textBuffer) {
+        elements.push(createMessageSpan(textBuffer))
+      }
+
+      return elements
+    }
+    message.message
+      .flatMap((msg) => {
+        if (msg?.image) {
+          return createImageEmote(msg.image, 'Emote')
+        }
+        if (msg?.text || msg?.emoji) {
+          return parseTextContent(msg?.emoji || msg.text!)
+        }
+      })
+      .forEach((el) => el && $content?.appendChild(el))
+    chatBox.appendChild(template)
+
+    const printedMessages = chatBox?.childElementCount
+    if (printedMessages > MAX_MESSAGES && !chatIsPaused()) {
+      for (let i = 0; i < printedMessages - MAX_MESSAGES; i++) {
+        chatBox.firstElementChild?.remove()
+      }
+    }
+  }
+
+  if (channelId && platform) {
+    loadBadges(platform, channelId, (badgesLoaded) => {
+      badges = badgesLoaded
+    })
+    loadThirdPartyEmotes(platform, channelId, (emotesLoaded) => {
+      emotesLoaded.forEach((emote) => {
+        customEmotes.set(emote.alt, emote)
+      })
+      console.log(customEmotes)
+    })
+  }
+  setInterval(() => {
+    printMessage(
+      {
+        author: {
+          badges: 'moderator/1,bits/10000,subscriber/42',
+          color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
+          name: 'ZackSB',
+        },
+        id: `abs-ad23-ascb1-${Math.floor(Math.random() * 99999)}`,
+        message: [
+          {
+            emoji: `🥺`,
+          },
+          {
+            text: 'MANDA yayahBad yayah5Head VaiYayah SALVE SOU D: D:  SEU FÃ',
+          },
+        ],
+        tms: 0,
+        type: 'text',
+      },
+      messageTemplate
+    )
+  }, 2000)
 </script>
+
+<style>
+  .messages {
+    overflow: auto;
+    display: flex;
+    flex-direction: column-reverse;
+    overflow-anchor: auto !important; /*  See https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-anchor */
+  }
+
+  .messages .messages-content .message {
+    transform: translateZ(0); /* fixes a bug in Safari iOS where the scroller doesn't update */
+  }
+</style>

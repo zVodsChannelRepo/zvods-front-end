@@ -1,0 +1,23 @@
+---
+import ArrowDown from '@components/icons/ArrowDown.astro'
+import PauseButton from '@components/icons/PauseButton.astro'
+import * as t from '@paraglide/messages'
+---
+
+<div id="pause-chat-box" class="hidden group/item w-full justify-center">
+  <button id="return-scroll" class={`w-auto justify-center px-4 py-2 rounded-lg bg-black/80 cursor-pointer absolute bottom-0`}>
+    <span class="hidden group-hover/item:inline-flex items-center">
+      <ArrowDown class="w-4 h-4 mr-2" />
+      {t.chatpausedhover()}
+    </span>
+    <span class="inline-flex group-hover/item:hidden items-center">
+      <PauseButton class="w-4 h-4 mr-2" />
+      {t.chatpaused()}
+    </span>
+  </button>
+</div>
+
+<script>
+  import { scrollChat } from '@lib/chatUtils'
+  document.querySelector('#return-scroll')?.addEventListener('click', scrollChat)
+</script>

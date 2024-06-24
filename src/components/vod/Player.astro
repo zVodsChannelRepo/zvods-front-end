@@ -1,18 +1,13 @@
 ---
-interface Props {}
+interface Props {
+  videoId: string
+}
+
+const { videoId } = Astro.props
 ---
 
-<div
-  id="player"
-  class="w-full bg-rgbaBGLight dark:bg-rgbaBGDark theBorder h-full flex items-center justify-center group-[.theater]:border-[0px]"
->
-  <iframe
-    class="flex w-full h-full justify-center items-center"
-    src="https://www.youtube.com/embed/FgoSrJt8E0Q?si=Q-KKCiCYIh_V5bLq"
-    title="Vídeo"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-    referrerpolicy="strict-origin-when-cross-origin"
-    allowfullscreen></iframe>
+<div id="player" class="w-full bg-rgbaBGLight dark:bg-rgbaBGDark theBorder h-full flex items-center justify-center group-[.theater]:border-[0px]">
+  <iframe class="w-full h-full justify-center items-center" src={`https://www.youtube.com/embed/${videoId}?autoplay=1&modestbranding=1&rel=0&iv_load_policy=3&controls=2&enablejsapi=1&showinfo=0`} title="Vídeo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </div>
 
 <script></script>

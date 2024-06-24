@@ -1,59 +1,40 @@
 ---
-import VerifiedIcon from "@components/icons/VerifiedIcon.astro";
-import RecommendedVods from "./RecommendedVods.astro";
-import * as t from "@paraglide/messages";
-import { relativeLink } from "@lib/i18n/utils";
-import { channelsExported } from "@lib/utils/channels";
-import type { Channel } from "@lib/types";
-import { SocialsIcons } from "@lib/utils/socialIcons";
-const location = Astro.url;
+import VerifiedIcon from '@components/icons/VerifiedIcon.astro'
+import RecommendedVods from './RecommendedVods.astro'
+import { relativeLink } from '@lib/i18n/utils'
+import { channelsExported } from '@lib/utils/channels'
+import type { Channel, Vod } from '@lib/types'
+import { SocialsIcons } from '@lib/utils/socialIcons'
+const location = Astro.url
 
-const channelData = channelsExported as Channel[];
+const channelData = channelsExported as Channel[]
+export interface Props {
+  vod: Vod
+}
 
-const channelInformations = channelData.find(
-  (streamer) => streamer.route === "yayahuz"
-);
+const { vod } = Astro.props
+const channelInformations = channelData.find((streamer) => streamer.route === vod.channel.toLowerCase())
 ---
 
-<div
-  class="flex justify-center items-start w-full p-6 pt-0 flex-col lg:flex-row space-y-6 lg:space-y-0"
->
-  <div
-    class="flex justify-center items-center w-full bg-white dark:bg-white/5 rounded-lg theBorder"
-  >
+<div class="flex justify-center items-start w-full p-6 pt-0 flex-col lg:flex-row space-y-6 lg:space-y-0">
+  <div class="flex justify-center items-center w-full bg-white dark:bg-white/5 rounded-lg theBorder">
     <div class="flex w-full justify-start items-center flex-col">
       <div class="flex justify-start items-center w-full p-6">
         <h1 class="titleDefault line-clamp-1 break-all font-bold text-lg">
-          droga é a Loud yayah
+          {vod.title}
         </h1>
       </div>
-      <div
-        class="w-full opacity-[10%] dark:opacity-10 border-black dark:border-white border-t-[1px]"
-      >
-      </div>
-      <div
-        class="flex justify-start md:justify-between flex-col md:flex-row items-center w-full space-y-4 md:space-y-0 md:space-x-4 p-6"
-      >
-        <div
-          class="flex justify-start md:justify-center flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4"
-        >
+      <div class="w-full opacity-[10%] dark:opacity-10 border-black dark:border-white border-t-[1px]"></div>
+      <div class="flex justify-start md:justify-between flex-col md:flex-row items-center w-full space-y-4 md:space-y-0 md:space-x-4 p-6">
+        <div class="flex justify-start md:justify-center flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
           <div class="flex justify-center items-center">
-            <div
-              class="flex justify-center items-center bg-rgbaBGLight dark:bg-rgbaBGDark size-12 rounded-full"
-            >
-              <img
-                class="size-12 bg-contain rounded-full select-none"
-                draggable="false"
-                src={channelInformations?.avatarImage}
-              />
+            <div class="flex justify-center items-center bg-rgbaBGLight dark:bg-rgbaBGDark size-12 rounded-full">
+              <img class="size-12 bg-contain rounded-full select-none" draggable="false" src={channelInformations?.avatarImage} />
             </div>
           </div>
           <div class="flex justify-start items-start flex-col space-y-1">
             <div class="flex justify-center items-center space-x-2">
-              <a
-                href={relativeLink(`/${channelInformations?.route}`, location)}
-                class="titleDefault text-lg font-bold text-center break-all line-clamp-1 duration-300 hover:opacity-60"
-              >
+              <a href={relativeLink(`/${channelInformations?.route}`, location)} class="titleDefault text-lg font-bold text-center break-all line-clamp-1 duration-300 hover:opacity-60">
                 {channelInformations?.name}
               </a>
               <VerifiedIcon class="text-sky-500" />
@@ -63,25 +44,19 @@ const channelInformations = channelData.find(
         <div class="flex justify-center items-center space-x-2 md:space-x-4">
           {
             channelInformations?.socials.map((social, index) => {
-              const FindedIcon = SocialsIcons[`${social.name}`]?.icon;
-              const FindedIconColor = SocialsIcons[`${social.name}`]?.color;
+              const FindedIcon = SocialsIcons[`${social.name}`]?.icon
+              const FindedIconColor = SocialsIcons[`${social.name}`]?.color
 
               return (
-                <a
-                  target="_blank"
-                  href={social.link}
-                  title={social.name}
-                  rel="noreferrer"
-                  class={`${FindedIconColor} hover:opacity-60 duration-300`}
-                >
+                <a target="_blank" href={social.link} title={social.name} rel="noreferrer" class={`${FindedIconColor} hover:opacity-60 duration-300`}>
                   <FindedIcon class="size-6 md:size-6" />
                 </a>
-              );
+              )
             })
           }
         </div>
       </div>
     </div>
   </div>
-  <RecommendedVods />
+  <RecommendedVods channel={vod.channel} />
 </div>
