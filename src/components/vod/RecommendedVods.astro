@@ -1,6 +1,6 @@
 ---
 import VodCard from '@components/homevods/VodCard.astro'
-import RecommendedVodsLoading from './RecommendedVodsLoading.astro'
+import HomeVodsLoading from '@components/homevods/HomeVodsLoading.astro'
 export interface Props {
   channel: string
 }
@@ -8,15 +8,14 @@ export interface Props {
 const { channel } = Astro.props
 ---
 
-<div data-channel={channel} id="vod-list" class="grid w-full gap-6 max-w-full lg:max-w-[450px] grid-cols-1 lg:ml-6">
+<div data-channel={channel} id="vod-list" class="grid w-full gap-6 max-w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
   <template id="vod-template">
     <VodCard />
   </template>
   <template id="loading-template">
-    <RecommendedVodsLoading />
+    <HomeVodsLoading />
   </template>
 </div>
-
 <script>
   import type { Vod } from '@lib/types'
   import { getLangFromUrl, relativeLink } from '@lib/i18n/utils'
