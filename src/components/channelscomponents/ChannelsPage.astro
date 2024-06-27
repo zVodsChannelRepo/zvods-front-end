@@ -4,9 +4,9 @@ import { relativeLink } from '@lib/i18n/utils'
 import type { Channel } from '@lib/types'
 import * as t from '@paraglide/messages'
 
-const req = await fetch(`https://beta.zvods.com/api/channel`)
+const req = await fetch(`https://api.zvods.com/api/v1/channels`)
 const location = Astro.url
-const channels = (await req.json()) as Channel[]
+const { data } = (await req.json()) as { data: { channels: Channel[] } }
 ---
 
 <div class="flex flex-col justify-start items-center w-full space-y-6 max-w-[1200px] pb-6">
@@ -18,22 +18,25 @@ const channels = (await req.json()) as Channel[]
 
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 w-full h-full">
     {
-      channels.map((channel) => (
-        <a href={!channel.launched ? '#' : relativeLink(`/${channel.route}`, location)} class={`select-none textDefault hover:titleDefault flex justify-start items-center flex-col bg-white dark:bg-white/5 duration-300 ${channel.launched === false && 'opacity-60'} hover:opacity-60 ${channel.launched === true ? 'cursor-pointer' : 'cursor-not-allowed'} rounded-lg theBorder p-6 space-y-6`}>
-          <div class="flex justify-center items-center bg-rgbaBGLight dark:bg-rgbaBGDark size-18 rounded-full">
-            <img class="size-28 bg-contain rounded-full select-none" draggable="false" src={channel.avatarImage} />
-          </div>
-          <div class="flex justify-start items-center flex-col space-y-4 w-full">
-            <div class="flex justify-center items-center space-x-2">
-              <h1 class="titleDefault font-bold text-lg break-all line-clamp-1">{channel.name}</h1>
-              <div class="flex justify-center items-center">
-                <VerifiedIcon class="text-sky-500 size-4" />
-              </div>
+      data.channels
+        // sort launched first
+        .sort((a, b) => Number(b.launched) - Number(a.launched))
+        .map((channel) => (
+          <a href={!channel.launched ? '#' : relativeLink(`/${channel.route}`, location)} class={`select-none textDefault hover:titleDefault flex justify-start items-center flex-col bg-white dark:bg-white/5 duration-300 ${channel.launched === false && 'opacity-60'} hover:opacity-60 ${channel.launched === true ? 'cursor-pointer' : 'cursor-not-allowed'} rounded-lg theBorder p-6 space-y-6`}>
+            <div class="flex justify-center items-center bg-rgbaBGLight dark:bg-rgbaBGDark size-18 rounded-full">
+              <img class="size-28 bg-contain rounded-full select-none" draggable="false" src={channel.avatarImage} />
             </div>
-            <span class="flex justify-center items-center p-4 bg-black/5 dark:bg-white/5 w-full rounded-lg">{channel.launched === true ? <p>{t.watch()}</p> : <p>{t.soon()}</p>}</span>
-          </div>
-        </a>
-      ))
+            <div class="flex justify-start items-center flex-col space-y-4 w-full">
+              <div class="flex justify-center items-center space-x-2">
+                <h1 class="titleDefault font-bold text-lg break-all line-clamp-1">{channel.name}</h1>
+                <div class="flex justify-center items-center">
+                  <VerifiedIcon class="text-sky-500 size-4" />
+                </div>
+              </div>
+              <span class="flex justify-center items-center p-4 bg-black/5 dark:bg-white/5 w-full rounded-lg">{channel.launched === true ? <p>{t.watch()}</p> : <p>{t.soon()}</p>}</span>
+            </div>
+          </a>
+        ))
     }
   </div>
 </div>

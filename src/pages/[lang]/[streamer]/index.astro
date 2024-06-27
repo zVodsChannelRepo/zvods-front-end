@@ -6,13 +6,11 @@ import { availableLanguageTags } from '@paraglide/runtime'
 import type { GetStaticPaths } from 'astro'
 export const prerender = true
 export const getStaticPaths = (async () => {
-  const req = await fetch(`https://beta.zvods.com/api/channel`)
-  const channels = (await req.json()) as Channel[]
-  const pages = channels
-    .filter((channel) => channel.launched)
-    .flatMap((channel) => {
-      return availableLanguageTags.map((lang) => ({ params: { lang, streamer: channel.name.toLowerCase() }, props: { channelData: channel } }))
-    })
+  const req = await fetch(`https://api.zvods.com/api/v1/channels?launched=true`)
+  const { data } = (await req.json()) as { data: { channels: Channel[] } }
+  const pages = data.channels.flatMap((channel) => {
+    return availableLanguageTags.map((lang) => ({ params: { lang, streamer: channel.name.toLowerCase() }, props: { channelData: channel } }))
+  })
   return pages
 }) satisfies GetStaticPaths
 const { channelData } = Astro.props

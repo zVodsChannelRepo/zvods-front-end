@@ -24,7 +24,7 @@ const { channelData } = Astro.props
     </div>
     <div class="flex justify-center items-center space-x-4">
       {
-        channelData?.socials.map((social, index) => {
+        channelData?.socials?.map((social, index) => {
           const FindedIcon = SocialsIcons[`${social.name}`]?.icon
           const FindedIconColor = SocialsIcons[`${social.name}`]?.color
 
