@@ -1,21 +1,19 @@
 ---
 import VerifiedIcon from '@components/icons/VerifiedIcon.astro'
-import { relativeLink } from '@lib/i18n/utils'
-import type { Channel, Vod } from '@lib/types'
+import type { Vod } from '@lib/types'
 import { SocialsIcons } from '@lib/utils/socialIcons'
 import RecommendedVods from './RecommendedVods.astro'
+import { relativeLink } from '@lib/i18n/utils'
 const location = Astro.url
 
-const { data } = (await (await fetch(`https://api.zvods.com/api/v1/channels?launched=true`)).json()) as { data: { channels: Channel[] } }
 export interface Props {
   vod: Vod
 }
 
 const { vod } = Astro.props
-const channelInformations = data?.channels.find((streamer) => streamer.route === vod.channel.toLowerCase())
 ---
 
-<div class="flex justify-center items-start w-full p-6 pt-0 flex-col lg:flex-row space-y-6 lg:space-y-0">
+<div class="justify-center items-start w-full p-6 pt-0">
   <div class="flex justify-center items-center w-full bg-white dark:bg-white/5 rounded-lg theBorder">
     <div class="flex w-full justify-start items-center flex-col">
       <div class="flex justify-start items-center w-full p-6">
@@ -28,34 +26,63 @@ const channelInformations = data?.channels.find((streamer) => streamer.route ===
         <div class="flex justify-start md:justify-center flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
           <div class="flex justify-center items-center">
             <div class="flex justify-center items-center bg-rgbaBGLight dark:bg-rgbaBGDark size-12 rounded-full">
-              <img class="size-12 bg-contain rounded-full select-none" draggable="false" src={channelInformations?.avatarImage} />
+              <img class="channel-info-avatar size-12 bg-contain rounded-full select-none" draggable="false" src="/avatar.png" />
             </div>
           </div>
           <div class="flex justify-start items-start flex-col space-y-1">
             <div class="flex justify-center items-center space-x-2">
-              <a href={relativeLink(`/${channelInformations?.route}`, location)} class="titleDefault text-lg font-bold text-center break-all line-clamp-1 duration-300 hover:opacity-60">
-                {channelInformations?.name}
+              <a href={relativeLink(`/${vod.channel}`, location)} class="capitalize titleDefault text-lg font-bold text-center break-all line-clamp-1 duration-300 hover:opacity-60">
+                {vod.channel}
               </a>
               <VerifiedIcon class="text-sky-500" />
             </div>
           </div>
         </div>
-        <div class="flex justify-center items-center space-x-2 md:space-x-4">
+        <div id="socials" class="flex justify-center items-center space-x-2 md:space-x-4">
+          <div class="loading flex justify-center items-center bg-rgbaBGLight dark:bg-rgbaBGDark size-7 md:size-7 rounded-full"></div>
+          <div class="loading flex justify-center items-center bg-rgbaBGLight dark:bg-rgbaBGDark size-7 md:size-7 rounded-full"></div>
+          <div class="loading flex justify-center items-center bg-rgbaBGLight dark:bg-rgbaBGDark size-7 md:size-7 rounded-full"></div>
+          <div class="loading flex justify-center items-center bg-rgbaBGLight dark:bg-rgbaBGDark size-7 md:size-7 rounded-full"></div>
+          <div class="loading flex justify-center items-center bg-rgbaBGLight dark:bg-rgbaBGDark size-7 md:size-7 rounded-full"></div>
           {
-            channelInformations?.socials.map((social, index) => {
-              const FindedIcon = SocialsIcons[`${social.name}`]?.icon
-              const FindedIconColor = SocialsIcons[`${social.name}`]?.color
-
+            Object.entries(SocialsIcons).map(([k, v]) => {
+              const FindedIcon = v.icon
+              const FindedIconColor = v.color
               return (
-                <a target="_blank" href={social.link} title={social.name} rel="noreferrer" class={`${FindedIconColor} hover:opacity-60 duration-300`}>
-                  <FindedIcon class="size-6 md:size-6" />
-                </a>
+                <template id={`icon_${k}`}>
+                  <FindedIcon class={`${FindedIconColor} size-6 md:size-6`} />
+                </template>
               )
             })
           }
+          <template id="social-link">
+            <a target="_blank" href="#" title="" rel="noreferrer" class={`hover:opacity-60 duration-300`}> </a>
+          </template>
         </div>
       </div>
     </div>
   </div>
-  <RecommendedVods channel={vod.channel} />
+  <div class="w-full flex justify-center mt-4">
+    <RecommendedVods channel={vod.channel} />
+  </div>
 </div>
+
+<script is:inline>
+  window.loadChannelData = (data) => {
+    document.querySelector('.channel-info-avatar').src = data?.avatarImage
+    document.querySelectorAll('#socials > .loading').forEach((el) => el.remove())
+    data.socials.map((social) => {
+      const template = document.querySelector(`#icon_${social.name}`)
+      if (template) {
+        const icon = template.content.cloneNode(true)
+        const templateLink = document.querySelector(`#social-link`)
+        const anchorLink = templateLink.content.cloneNode(true).querySelector('a')
+        anchorLink.append(icon)
+        anchorLink.href = social.link
+        anchorLink.title = social.name
+
+        document.querySelector('#socials').appendChild(anchorLink)
+      }
+    })
+  }
+</script>

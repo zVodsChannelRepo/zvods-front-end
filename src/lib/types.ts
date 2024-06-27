@@ -182,3 +182,10 @@ export type EmotesData = {
   url: string
 }
 export type Emotes = Map<string, EmotesData>
+
+declare global {
+  interface Window {
+    channel?: Channel
+    loadChannelData?: (data: Channel) => void
+  }
+}

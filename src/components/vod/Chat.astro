@@ -36,7 +36,7 @@ const { channel, chatId, platform } = Astro.props
 </div>
 <script>
   import { toggleTheater } from '@lib/vodUtils'
-  import type { FormatChatMessage, CustomBadges, Vod, Badges, Emotes, Channel } from '@lib/types'
+  import type { FormatChatMessage, Vod, Badges, Emotes, Channel } from '@lib/types'
   import { chatIsPaused, handlerChatScroll, loadBadges, loadThirdPartyEmotes } from '@lib/chatUtils'
   const MAX_MESSAGES = 150
   document.querySelector('#toggle-theater')?.addEventListener('click', toggleTheater)
@@ -53,11 +53,11 @@ const { channel, chatId, platform } = Astro.props
     const res = await fetch(`https://api.zvods.com/api/v1/channel/${channel}`)
     return (await res.json()) as { code: String | 'success' | 'not_found'; message?: string; data?: Channel }
   }
-
   async function loadChannelData() {
     const { data } = await fetchChannel(channel || '')
     const channelId = data?.channelId
-    var channelData = data
+    window.channel = data
+    if (window?.loadChannelData && data) window.loadChannelData(data)
     if (channelId && platform) {
       loadBadges(platform, channelId, (badgesLoaded) => {
         badges = badgesLoaded
