@@ -1,7 +1,7 @@
 export interface InfiniteScrollOptions<T = {}, K = {}> {
   box: string | HTMLElement
   templateBox: string | HTMLTemplateElement
-  fetchItems: (page: number, lastResponse: K, setResponse: (res: K) => void) => Promise<T[]>
+  fetchItems: (page: number, lastResponse: K, setResponse: (res: K) => void, finish: () => void) => Promise<T[]>
   loadingPlaceholder?: string | HTMLTemplateElement
   loadingPlaceholderCount?: number
   itemConfigurator?: (item: T, element: HTMLElement) => void
@@ -11,14 +11,13 @@ export default class InfiniteScroll<T = {}, K = {}> {
   private ended = false
   private content: HTMLElement
   private template: HTMLTemplateElement
-  private fetchItemsFn: (page: number, lastResponse: K, setResponse: (res: K) => void) => Promise<T[]>
+  private fetchItemsFn: (page: number, lastResponse: K, setResponse: (res: K) => void, finish: () => void) => Promise<T[]>
   private loadingPlaceholderTemplate: HTMLTemplateElement | null
   private itemConfigurator?: (item: T, element: HTMLElement) => void
   private loadingPlaceholderCount: number
   private lastResponse: K | any
   private page: number
   private loading: boolean
-  private scrolledDown = false
 
   constructor(options: InfiniteScrollOptions<T, K>) {
     this.content = typeof options.box === 'string' ? document.getElementById(options.box)! : options.box
@@ -44,29 +43,32 @@ export default class InfiniteScroll<T = {}, K = {}> {
 
   private async loadItems() {
     if (this.loading) {
-      this.scrolledDown = true
       return
     }
 
     this.loading = true
+    let forceFinish = false
     this.showLoadingPlaceholders()
     const items = await this.fetchItemsFn(this.page, this.lastResponse, (res) => {
       this.lastResponse = res
-    })
+    }, () => forceFinish = true)
     this.hideLoadingPlaceholders()
-    if (items.length == 0) {
-      this.end()
-      return
-    }
+
 
     items.forEach((item) => {
       const clone = this.template.content.cloneNode(true) as DocumentFragment
       this.configureItem(clone, item)
       this.content.appendChild(clone)
     })
-    const scrolledDown = window.innerHeight + window.scrollY >= document.body.offsetHeight - 5;
+    if (items.length == 0 || forceFinish) {
+      this.end()
+      this.loading = false
+      return
+    }
+    // const scrolledDown = window.innerHeight + window.scrollY >= document.body.offsetHeight - 10;
     const hasVerticalScrollbar = window.innerWidth > document.documentElement.clientWidth;
-    if (!hasVerticalScrollbar || scrolledDown) {
+    // console.log({ scrolledDown, hasVerticalScrollbar: !hasVerticalScrollbar })
+    if (!hasVerticalScrollbar) {
       setTimeout(() => this.loadItems(), 1000)
     }
     this.page++
@@ -103,7 +105,7 @@ export default class InfiniteScroll<T = {}, K = {}> {
 
   private onScroll() {
     if (this.ended) return
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 800) {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 50) {
       this.loadItems()
     }
   }

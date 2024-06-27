@@ -14,7 +14,6 @@ import VodCard from './VodCard.astro'
 
 <script>
   import type { Vod } from '@lib/types'
-  import { vodsExported } from '@lib/utils/vods'
   import { getLangFromUrl, relativeLink } from '@lib/i18n/utils'
   import InfiniteScroll from '@lib/infiniteScroll'
   import formatTimeAgo from '@lib/utils/formatTimeAgo'
@@ -24,20 +23,17 @@ import VodCard from './VodCard.astro'
     new InfiniteScroll<Vod, { cursor?: string }>({
       box: 'vod-list',
       templateBox: 'vod-template',
-      fetchItems(page, lres, setRes) {
-        return new Promise((resolve) => {
-          console.log({ lres })
-          if (page === 10) {
-            setRes({ cursor: undefined })
-            return resolve([])
+      fetchItems(_page, lres, setRes, finish) {
+        return new Promise(async (resolve) => {
+          const res = await fetch(`https://api.zvods.com/api/v1/vods?results=12&cursor=${lres?.cursor || ''}`)
+          const { data } = (await res.json()) as { data: { vods: Vod[]; cursor?: string } }
+          if (data.vods.length === 0) return resolve([])
+          if (data?.cursor) {
+            setRes({ cursor: data.cursor })
+          } else {
+            data.vods.length > 0 && finish()
           }
-          setTimeout(() => {
-            const items = Array.from({ length: 10 }, (_, i) => ({
-              ...vodsExported[Math.floor(Math.random() * vodsExported.length)],
-            })) satisfies Vod[]
-            setRes({ cursor: btoa(String(page)) })
-            resolve(items)
-          }, 1000)
+          return resolve(data.vods)
         })
       },
       loadingPlaceholder: 'loading-template',

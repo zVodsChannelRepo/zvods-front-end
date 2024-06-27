@@ -3,7 +3,6 @@ export type Vod = {
   channel: string
   vodId: string
   chatId: string
-  duration: number
   title: string
   status: 'public' | String
   date: string
