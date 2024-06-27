@@ -1,19 +1,18 @@
 ---
 import VerifiedIcon from '@components/icons/VerifiedIcon.astro'
-import RecommendedVods from './RecommendedVods.astro'
 import { relativeLink } from '@lib/i18n/utils'
-import { channelsExported } from '@lib/utils/channels'
 import type { Channel, Vod } from '@lib/types'
 import { SocialsIcons } from '@lib/utils/socialIcons'
+import RecommendedVods from './RecommendedVods.astro'
 const location = Astro.url
 
-const channelData = channelsExported as Channel[]
+const { data } = (await (await fetch(`https://api.zvods.com/api/v1/channels?launched=true`)).json()) as { data: { channels: Channel[] } }
 export interface Props {
   vod: Vod
 }
 
 const { vod } = Astro.props
-const channelInformations = channelData.find((streamer) => streamer.route === vod.channel.toLowerCase())
+const channelInformations = data?.channels.find((streamer) => streamer.route === vod.channel.toLowerCase())
 ---
 
 <div class="flex justify-center items-start w-full p-6 pt-0 flex-col lg:flex-row space-y-6 lg:space-y-0">

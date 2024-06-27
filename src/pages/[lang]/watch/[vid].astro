@@ -29,7 +29,7 @@ const description = vodExists ? `Acesse a transmissão do dia ${date} de ${data?
       <vod-content class="flex justify-start items-center w-full flex-col h-full">
         <div class="group-[.theater]:h-screen flex justify-center items-center w-full h-[80vh] lg:h-[70vh] p-6 group-[.theater]:p-0 max-w-[1600px] group-[.theater]:max-w-full group-[.theater]:min-h-full min-h-[400px] group-[.theater]:space-x-0 group-[.theater]:space-y-0 lg:space-y-0 lg:space-x-6 flex-col lg:flex-row">
           <Player videoId={vid} />
-          <Chat platform={data.vod.platform} chatId={data.vod.chatId} channelId={data.vod.channelId} />
+          <Chat platform={data.vod.platform} chatId={data.vod.chatId} channel={data.vod.channel} />
         </div>
         <vod-section class="flex justify-center items-center w-full max-w-[1600px]">
           <VodInformations vod={data.vod} />

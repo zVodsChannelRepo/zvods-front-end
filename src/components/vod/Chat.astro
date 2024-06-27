@@ -7,10 +7,10 @@ import ChatPaused from './ChatPaused.astro'
 import type { Vod } from '@lib/types'
 export interface Props {
   chatId: string
-  channelId: string
+  channel: string
   platform: Vod['platform']
 }
-const { channelId, chatId, platform } = Astro.props
+const { channel, chatId, platform } = Astro.props
 ---
 
 <div class="bg-white dark:bg-white/5 theBorder border-t-[0px] lg:border-t-[1px] rounded-lg group-[.theater]:rounded-none group-[.theater]:border-[0px] w-full lg:max-w-[450px] h-full items-start relative">
@@ -25,7 +25,7 @@ const { channelId, chatId, platform } = Astro.props
   </div>
   <div class="relative h-full">
     <div class="messages h-full">
-      <div data-chat-id={chatId} data-channel-id={channelId} data-platform={platform} id="chat-box" class="messages-content">
+      <div data-chat-id={chatId} data-channel={channel} data-platform={platform} id="chat-box" class="messages-content">
         <template>
           <Message />
         </template>
@@ -36,18 +36,43 @@ const { channelId, chatId, platform } = Astro.props
 </div>
 <script>
   import { toggleTheater } from '@lib/vodUtils'
-  import type { FormatChatMessage, CustomBadges, Vod, Badges, Emotes } from '@lib/types'
+  import type { FormatChatMessage, CustomBadges, Vod, Badges, Emotes, Channel } from '@lib/types'
   import { chatIsPaused, handlerChatScroll, loadBadges, loadThirdPartyEmotes } from '@lib/chatUtils'
   const MAX_MESSAGES = 150
   document.querySelector('#toggle-theater')?.addEventListener('click', toggleTheater)
   document.querySelector('.messages')?.addEventListener('scroll', handlerChatScroll)
 
   const chatBox = document.querySelector('#chat-box') as HTMLDivElement
-  const { channelId, chatId, platform } = chatBox.dataset as { chatId?: string; channelId?: string; platform?: Vod['platform'] }
+  const { channel, chatId, platform } = chatBox.dataset as { chatId?: string; channel?: string; platform?: Vod['platform'] }
 
   const messageTemplate = chatBox.querySelector('template')
   let customEmotes: Emotes = new Map()
   let badges: Badges = new Map()
+
+  async function fetchChannel(channel: string) {
+    const res = await fetch(`https://api.zvods.com/api/v1/channel/${channel}`)
+    return (await res.json()) as { code: String | 'success' | 'not_found'; message?: string; data?: Channel }
+  }
+
+  async function loadChannelData() {
+    const { data } = await fetchChannel(channel || '')
+    const channelId = data?.channelId
+    var channelData = data
+    if (channelId && platform) {
+      loadBadges(platform, channelId, (badgesLoaded) => {
+        badges = badgesLoaded
+      })
+      loadThirdPartyEmotes(platform, channelId, (emotesLoaded) => {
+        emotesLoaded.forEach((emote) => {
+          customEmotes.set(emote.alt, emote)
+        })
+        console.log(customEmotes)
+      })
+    }
+  }
+
+  loadChannelData()
+
   function printMessage(message: FormatChatMessage, messageTemplate: HTMLTemplateElement | null) {
     if (!messageTemplate) return
     const template = messageTemplate?.content?.cloneNode(true) as DocumentFragment
@@ -136,17 +161,6 @@ const { channelId, chatId, platform } = Astro.props
     }
   }
 
-  if (channelId && platform) {
-    loadBadges(platform, channelId, (badgesLoaded) => {
-      badges = badgesLoaded
-    })
-    loadThirdPartyEmotes(platform, channelId, (emotesLoaded) => {
-      emotesLoaded.forEach((emote) => {
-        customEmotes.set(emote.alt, emote)
-      })
-      console.log(customEmotes)
-    })
-  }
   setInterval(() => {
     printMessage(
       {
