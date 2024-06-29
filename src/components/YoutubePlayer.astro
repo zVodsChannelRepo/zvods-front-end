@@ -1,0 +1,98 @@
+---
+interface Props extends Omit<astroHTML.JSX.IframeHTMLAttributes, 'src'> {
+  embedParams?: EmbedParams
+  videoId: string
+  progressInterval?: number
+}
+
+interface EmbedParams {
+  autoplay?: ToggleParam
+  cc_lang_pref?: string
+  cc_load_policy?: ToggleParam
+  color?: 'red' | 'white'
+  controls?: ToggleParam
+  disablekb?: ToggleParam
+  enablejsapi?: ToggleParam
+  end?: number
+  fs?: ToggleParam
+  hl?: string
+  iv_load_policy?: 1 | '1' | 3 | '3'
+  list?: string
+  listType?: 'playlist' | 'user_uploads'
+  loop?: ToggleParam
+  /** @deprecated has no effect, deprecated by YouTube on August 15 2023 */
+  modestbranding?: ToggleParam
+  origin?: string
+  playlist?: string
+  playslinline?: ToggleParam
+  rel?: ToggleParam
+  start?: number
+  widget_referrer?: string
+}
+
+type ToggleParam = 0 | 1
+let { progressInterval = 1000, embedParams, videoId, ...iframeProps } = Astro.props as Props
+
+let params: EmbedParams = { autoplay: 1, ...embedParams }
+---
+
+<div data-class={iframeProps.class || ''} data-progress-interval={progressInterval} data-player-vars={JSON.stringify(params)} data-video-id={videoId} id="yt-player"></div>
+<script is:inline>
+  var player
+  const ytp = document.querySelector('#yt-player')
+  function onYouTubeIframeAPIReady() {
+    const { playerVars, videoId } = ytp.dataset
+    player = new YT.Player('yt-player', {
+      height: '100%',
+      width: '100%',
+      style: 'teste:red',
+      videoId: videoId,
+      playerVars: JSON.parse(playerVars || '{}'),
+      events: {
+        onReady: onPR,
+        onStateChange: onPSC,
+      },
+      host: 'https://www.youtube-nocookie.com',
+    })
+  }
+  function onPR(event) {
+    const iframe = player.getIframe()
+    iframe.style.width = '100%'
+    iframe.style.aspectRatio = '16/9'
+    iframe.classList.value = ytp.dataset.class
+    event.target.playVideo()
+    onP()
+    typeof onPlayerReady !== 'undefined' && onPlayerReady(event, player)
+    window?.onPlayerReady && window.onPlayerReady(event, player)
+  }
+
+  function onPSC(event) {
+    typeof onPlayerStateChange !== 'undefined' && onPlayerStateChange(event, player)
+    window?.onPlayerStateChange && window.onPlayerStateChange(event, player)
+  }
+  let prevPlayed = 0
+  function onP() {
+    const playedSeconds = player.getCurrentTime() || 0
+    const duration = player.getDuration()
+    const progress = {
+      playedSeconds,
+      played: playedSeconds / duration,
+    }
+    if (playedSeconds !== prevPlayed) {
+      if (Math.abs(playedSeconds - prevPlayed) >= 1) {
+        typeof onSeek !== 'undefined' && onSeek(playedSeconds)
+        window?.onSeek && window.onSeek(playedSeconds)
+      }
+      typeof onProgress !== 'undefined' && onProgress(progress)
+      window?.onProgress && window.onProgress(progress)
+    }
+    prevPlayed = playedSeconds
+    setTimeout(onP, ytp.dataset?.progressInterval || 1000)
+  }
+</script>
+<script>
+  const tag = document.createElement('script')
+  tag.src = 'https://www.youtube.com/iframe_api'
+  const firstScriptTag = document.getElementsByTagName('script')[0]
+  firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag)
+</script>

@@ -1,3 +1,5 @@
+import type { ChatMessage } from './ChatTypes'
+
 export type Vod = {
   id: number
   channel: string
@@ -187,5 +189,10 @@ declare global {
   interface Window {
     channel?: Channel
     loadChannelData?: (data: Channel) => void
+    messages?: ChatMessage[]
+    onProgress?: (progress: { playedSeconds: number, played: number }) => void
+    onSeek?: (time: number) => void
+    onPlayerReady?: (event: any, player: any) => void
+    onPlayerStateChange?: (event: any, player: any) => void
   }
 }

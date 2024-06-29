@@ -1,6 +1,7 @@
 import { userBadges } from 'src/data/userBadges'
-import type { Badges, BadgesVersions, CustomBadges, TwitchBadgesResponse, TwitchBadgesResponseVersions, Vod } from './types'
-import { fetchGlobalBttvBadges, fetchChannelBttvBadges, fetchChannel7tvBadges, fetchGlobal7tvBadges, fetchGlobalFzzBadges, fetchChannelFzzBadges } from './thirdPartyEmotes'
+import type { ChatMessage } from './ChatTypes'
+import { fetchChannel7tvBadges, fetchChannelBttvBadges, fetchChannelFzzBadges, fetchGlobal7tvBadges, fetchGlobalBttvBadges, fetchGlobalFzzBadges } from './thirdPartyEmotes'
+import type { Badges, BadgesVersions, CustomBadges, Emotes, FormatChatMessage, TwitchBadgesResponse, TwitchBadgesResponseVersions, Vod } from './types'
 
 export function chatIsPaused() {
   const pauseChatBox = document.querySelector('#pause-chat-box') as HTMLDivElement
@@ -114,4 +115,119 @@ export async function loadThirdPartyEmotes(platform: Vod['platform'], channelId:
 
   console.log(`${customEmotesList.length} third-party emotes loaded`)
   cb(customEmotesList)
+}
+
+export function createMessagePrinter({ MAX_MESSAGES, chatBox, messageTemplate }: { chatBox: HTMLDivElement, MAX_MESSAGES: number, messageTemplate: HTMLTemplateElement | null }) {
+
+  return function printMessage(message: FormatChatMessage, badges: Badges, customEmotes: Emotes) {
+    if (!messageTemplate) return
+    const template = messageTemplate?.content?.cloneNode(true) as HTMLDivElement
+    const authorName = template.querySelector('.authorName') as HTMLSpanElement
+    authorName.textContent = message.author.name
+    authorName.style.color = message.author.color
+    const $content = template.querySelector('.content')
+    template.id = message.id
+
+    function pushBadge(url: string, alt: string) {
+      const $badgeTemplate = (template.querySelector('#badge-template') as HTMLTemplateElement)?.content?.cloneNode(true) as DocumentFragment
+      const $badge = $badgeTemplate.querySelector('img') as HTMLImageElement
+      $badge.src = url
+      $badge.alt = alt
+      template.querySelector('.badges')?.appendChild($badge)
+    }
+
+    message.author.badges.split(',').forEach((badgeStr) => {
+      const [name, version] = badgeStr.split('/')
+      if (name == 'image') {
+        pushBadge(version, name)
+      } else {
+        const badge = badges.get(name)?.get(version)
+        if (badge) {
+          pushBadge(badge.image, badge.description)
+        }
+      }
+    })
+
+    function createImageEmote(url: string, alt: string) {
+      const $emoteTemplate = (template.querySelector('#emote-template') as HTMLTemplateElement)?.content?.cloneNode(true) as DocumentFragment
+      const $emote = $emoteTemplate.querySelector('img') as HTMLImageElement
+      $emote.src = url
+      $emote.alt = alt
+      return $emote
+    }
+
+    function createMessageSpan(text: string) {
+      const span = document.createElement('span')
+      span.textContent = text
+      return span
+    }
+
+    function parseTextContent(text: string) {
+      if (customEmotes.size == 0) return createMessageSpan(text)
+      const elements = []
+      const parts = text.split(' ')
+      let textBuffer = ''
+
+      parts.forEach((part) => {
+        const emote = customEmotes.get(part)
+
+        if (emote) {
+          if (textBuffer) {
+            elements.push(createMessageSpan(textBuffer))
+            textBuffer = ''
+          }
+          elements.push(createImageEmote(emote.url, emote.alt))
+        } else {
+          textBuffer += `${part} `
+        }
+      })
+
+      if (textBuffer) {
+        elements.push(createMessageSpan(textBuffer))
+      }
+
+      return elements
+    }
+    message.message
+      .flatMap((msg) => {
+        if (msg?.image) {
+          return createImageEmote(msg.image, 'Emote')
+        }
+        if (msg?.text || msg?.emoji) {
+          return parseTextContent(msg?.emoji || msg.text!)
+        }
+      })
+      .forEach((el) => el && $content?.appendChild(el))
+    chatBox.appendChild(template)
+
+    const printedMessages = chatBox?.childElementCount
+    if (printedMessages > MAX_MESSAGES && !chatIsPaused()) {
+      for (let i = 0; i < printedMessages - MAX_MESSAGES; i++) {
+        chatBox.firstElementChild?.remove()
+      }
+    }
+  }
+}
+export function getMessageIndexByTime(messages: ChatMessage[], time: number) {
+  function binarySearch(messages: ChatMessage[], targetTime: number) {
+    let left = 0
+    let right = messages.length - 1
+    let foundIndex = -1
+
+    while (left <= right) {
+      const mid = Math.floor((left + right) / 2)
+      if (messages[mid].tms === targetTime) {
+        return mid
+      } else if (messages[mid].tms < targetTime) {
+        left = mid + 1
+        foundIndex = mid
+      } else {
+        right = mid - 1
+      }
+    }
+
+    return foundIndex
+  }
+
+  return binarySearch(messages, time)
 }

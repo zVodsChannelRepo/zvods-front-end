@@ -23,6 +23,12 @@ dependencies:
   astro:
     specifier: ^4.10.3
     version: 4.10.3(typescript@5.4.5)
+  compress-json:
+    specifier: ^3.1.0
+    version: 3.1.0
+  pako:
+    specifier: ^2.1.0
+    version: 2.1.0
   svelte:
     specifier: ^4.2.18
     version: 4.2.18
@@ -37,6 +43,9 @@ devDependencies:
   '@inlang/paraglide-js':
     specifier: 1.10.1
     version: 1.10.1
+  '@types/pako':
+    specifier: ^2.0.3
+    version: 2.0.3
 
 packages:
 
@@ -1678,6 +1687,10 @@ packages:
       undici-types: 5.26.5
     dev: false
 
+  /@types/pako@2.0.3:
+    resolution: {integrity: sha512-bq0hMV9opAcrmE0Byyo0fY3Ew4tgOevJmQ9grUhpXQhYfyLJ1Kqg3P33JT5fdbT2AjeAjR51zqqVjAL/HMkx7Q==}
+    dev: true
+
   /@types/unist@2.0.10:
     resolution: {integrity: sha512-IfYcSBWE3hLpBg8+X2SEa8LVkJdJEkT2Ese2aaLs3ptGdVtABxndrMaxuFlQ1qdFf9Q5rDvDpxI3WwgvKFAsQA==}
     dev: false
@@ -2325,6 +2338,10 @@ packages:
 
   /common-ancestor-path@1.0.1:
     resolution: {integrity: sha512-L3sHRo1pXXEqX8VU28kfgUY+YGsk09hPqZiZmLacNib6XNTCM8ubYeT7ryXQw8asB1sKgcU5lkB7ONug08aB8w==}
+    dev: false
+
+  /compress-json@3.1.0:
+    resolution: {integrity: sha512-Zcq4jRC5ZpfaOY3mbBWOANtGuMHJ/hsTENcwN1/lEkrogcoAF7HBma1RLe/CICZO6IquK1U0EaPzmnlDIFRNjA==}
     dev: false
 
   /concat-map@0.0.1:
@@ -4015,6 +4032,10 @@ packages:
 
   /pako@1.0.11:
     resolution: {integrity: sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==}
+    dev: false
+
+  /pako@2.1.0:
+    resolution: {integrity: sha512-w+eufiZ1WuJYgPXbV/PO3NCMEc3xqylkKHzp8bxp1uW4qaSNQUkwmLLEc3kKsfz8lpV1F8Ht3U1Cm+9Srog2ug==}
     dev: false
 
   /parse-latin@5.0.1:

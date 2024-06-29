@@ -36,15 +36,24 @@ const { channel, chatId, platform } = Astro.props
 </div>
 <script>
   import { toggleTheater } from '@lib/vodUtils'
-  import type { FormatChatMessage, Vod, Badges, Emotes, Channel } from '@lib/types'
-  import { chatIsPaused, handlerChatScroll, loadBadges, loadThirdPartyEmotes } from '@lib/chatUtils'
+  import { isCuid } from '@lib/cuid'
+  import { type ChatMessage } from '@lib/ChatTypes'
+  import * as compressJSON from 'compress-json'
+  // @ts-ignore
+  import pako from 'pako'
+  import type { Vod, Badges, Emotes, Channel } from '@lib/types'
+  import { handlerChatScroll, loadBadges, loadThirdPartyEmotes, createMessagePrinter, getMessageIndexByTime } from '@lib/chatUtils'
   const MAX_MESSAGES = 150
+  let messages: ChatMessage[] = []
+  let lastTime = 0,
+    startWin = 0,
+    winSize = 10
   document.querySelector('#toggle-theater')?.addEventListener('click', toggleTheater)
   document.querySelector('.messages')?.addEventListener('scroll', handlerChatScroll)
 
   const chatBox = document.querySelector('#chat-box') as HTMLDivElement
   const { channel, chatId, platform } = chatBox.dataset as { chatId?: string; channel?: string; platform?: Vod['platform'] }
-
+  const isUsingCuid = isCuid(chatId || '')
   const messageTemplate = chatBox.querySelector('template')
   let customEmotes: Emotes = new Map()
   let badges: Badges = new Map()
@@ -66,132 +75,60 @@ const { channel, chatId, platform } = Astro.props
         emotesLoaded.forEach((emote) => {
           customEmotes.set(emote.alt, emote)
         })
-        console.log(customEmotes)
       })
     }
   }
 
+  async function fetchChat() {
+    try {
+      const req = await fetch(`https://api.zvods.com/api/v1/chat?id=${chatId}&platform=${platform}&channel=${channel}`)
+      if (req.status === 200) {
+        if (!isUsingCuid) {
+          const data = await req.json()
+          messages = compressJSON.decompress(data) as ChatMessage[]
+          return
+        }
+        const compressedData = await req.arrayBuffer()
+        const decompressedData = pako.inflate(new Uint8Array(compressedData), { to: 'string' })
+        messages = JSON.parse(decompressedData)
+        window.messages = JSON.parse(decompressedData)
+      }
+      console.log(messages)
+      console.log(`${messages.length} Messages loaded`)
+    } catch (e) {}
+  }
+
+  fetchChat()
   loadChannelData()
 
-  function printMessage(message: FormatChatMessage, messageTemplate: HTMLTemplateElement | null) {
-    if (!messageTemplate) return
-    const template = messageTemplate?.content?.cloneNode(true) as DocumentFragment
-    const authorName = template.querySelector('.authorName') as HTMLSpanElement
-    authorName.textContent = message.author.name
-    authorName.style.color = message.author.color
-    const $content = template.querySelector('.content')
-
-    function pushBadge(url: string, alt: string) {
-      const $badgeTemplate = (template.querySelector('#badge-template') as HTMLTemplateElement)?.content?.cloneNode(true) as DocumentFragment
-      const $badge = $badgeTemplate.querySelector('img') as HTMLImageElement
-      $badge.src = url
-      $badge.alt = alt
-      template.querySelector('.badges')?.appendChild($badge)
+  let chatDelayDiff = 0
+  const printMessage = createMessagePrinter({
+    chatBox,
+    MAX_MESSAGES,
+    messageTemplate,
+  })
+  window.onProgress = (progress) => {
+    let time = progress.playedSeconds
+    if (Math.abs(time - lastTime) >= 1) {
+      startWin = getMessageIndexByTime(messages, time)
     }
-
-    message.author.badges.split(',').forEach((badgeStr) => {
-      const [name, version] = badgeStr.split('/')
-      if (name == 'image') {
-        pushBadge(version, name)
-      } else {
-        const badge = badges.get(name)?.get(version)
-        if (badge) {
-          pushBadge(badge.image, badge.description)
-        }
-      }
-    })
-
-    function createImageEmote(url: string, alt: string) {
-      const $emoteTemplate = (template.querySelector('#emote-template') as HTMLTemplateElement)?.content?.cloneNode(true) as DocumentFragment
-      const $emote = $emoteTemplate.querySelector('img') as HTMLImageElement
-      $emote.src = url
-      $emote.alt = alt
-      return $emote
-    }
-
-    function createMessageSpan(text: string) {
-      const span = document.createElement('span')
-      span.textContent = text
-      return span
-    }
-
-    function parseTextContent(text: string) {
-      if (customEmotes.size == 0) return createMessageSpan(text)
-      const elements = []
-      const parts = text.split(' ')
-      let textBuffer = ''
-
-      parts.forEach((part) => {
-        const emote = customEmotes.get(part)
-
-        if (emote) {
-          if (textBuffer) {
-            elements.push(createMessageSpan(textBuffer))
-            textBuffer = ''
-          }
-          elements.push(createImageEmote(emote.url, emote.alt))
-        } else {
-          textBuffer += `${part} `
-        }
-      })
-
-      if (textBuffer) {
-        elements.push(createMessageSpan(textBuffer))
-      }
-
-      return elements
-    }
-    message.message
-      .flatMap((msg) => {
-        if (msg?.image) {
-          return createImageEmote(msg.image, 'Emote')
-        }
-        if (msg?.text || msg?.emoji) {
-          return parseTextContent(msg?.emoji || msg.text!)
-        }
-      })
-      .forEach((el) => el && $content?.appendChild(el))
-    chatBox.appendChild(template)
-
-    const printedMessages = chatBox?.childElementCount
-    if (printedMessages > MAX_MESSAGES && !chatIsPaused()) {
-      for (let i = 0; i < printedMessages - MAX_MESSAGES; i++) {
-        chatBox.firstElementChild?.remove()
+    lastTime = time
+    time = chatDelayDiff + time
+    for (let i = startWin; i <= startWin + winSize; i++) {
+      const message = messages[i]
+      if (message?.tms <= time && !document.getElementById(message.id)) {
+        startWin += 1
+        printMessage(message, badges, customEmotes)
       }
     }
   }
-
-  setInterval(() => {
-    printMessage(
-      {
-        author: {
-          badges: 'moderator/1,bits/10000,subscriber/42',
-          color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
-          name: 'ZackSB',
-        },
-        id: `abs-ad23-ascb1-${Math.floor(Math.random() * 99999)}`,
-        message: [
-          {
-            emoji: `🥺`,
-          },
-          {
-            text: 'MANDA yayahBad yayah5Head VaiYayah SALVE SOU D: D:  SEU FÃ',
-          },
-        ],
-        tms: 0,
-        type: 'text',
-      },
-      messageTemplate
-    )
-  }, 2000)
 </script>
-
 <style>
   .messages {
     overflow: auto;
     display: flex;
     flex-direction: column-reverse;
-    overflow-anchor: auto !important; /*  See https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-anchor */
+    overflow-anchor: auto !important;
   }
 
   .messages .messages-content .message {
